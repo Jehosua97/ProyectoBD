@@ -1,3 +1,4 @@
+--Creando el usuario proyecto desde "scott" y dandole permisos
 CREATE USER proyecto IDENTIFIED BY proyecto;
 GRANT create table to proyecto;
 GRANT create sequence to proyecto;
@@ -5,6 +6,7 @@ GRANT create view to proyecto;
 GRANT create trigger to proyecto;
 GRANT create procedure to proyecto;
 
+--Desde usuario "proyecto"
 CREATE TABLE autor(
   autor_id CHAR(10) NOT NULL,
   nombreAutor VARCHAR2(20) NOT NULL,
