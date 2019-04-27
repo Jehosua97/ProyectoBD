@@ -5,7 +5,7 @@ GRANT create view to proyecto;
 GRANT create trigger to proyecto;
 GRANT create procedure to proyecto;
 
-CREATE TABLE autorAu(
+CREATE TABLE autor(
   autor_id CHAR(10) NOT NULL,
   nombreAutor VARCHAR2(20) NOT NULL,
   apPaternoAutor VARCHAR2(20) NOT NULL,
