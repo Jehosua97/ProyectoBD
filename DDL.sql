@@ -5,6 +5,12 @@ GRANT create sequence to proyecto;
 GRANT create view to proyecto;
 GRANT create trigger to proyecto;
 GRANT create procedure to proyecto;
+GRANT create ROLLBACK segment to proyecto;
+GRANT alter tablespace to proyecto;
+GRANT create session to proyecto;
+GRANT UNLIMITED TABLESPACE TO proyecto;
+
+
 
 --Desde usuario "proyecto"
 CREATE TABLE autor(
@@ -17,7 +23,7 @@ CREATE TABLE autor(
   );
 
 CREATE TABLE material(
-  material_id VARCHAR2(5) NOT NULL,
+  material_id CHAR(5) NOT NULL,
   ubicacion VARCHAR2(20) NOT NULL,
   colocacion VARCHAR2(20) NOT NULL,
   titulo VARCHAR2(20) NOT NULL,
@@ -25,7 +31,7 @@ CREATE TABLE material(
   );
 
 CREATE TABLE escribe(
-  material_id VARCHAR2(5) NOT NULL,
+  material_id CHAR(5) NOT NULL,
   autor_id CHAR(10) NOT NULL,
   CONSTRAINT Pkescribe PRIMARY KEY (material_id, autor_id),
   CONSTRAINT Fkmaterial_id FOREIGN KEY (material_id)
@@ -35,7 +41,7 @@ CREATE TABLE escribe(
   );
 
 CREATE TABLE libro(
-  material_id VARCHAR2(5) NOT NULL,
+  material_id CHAR(5) NOT NULL,
   noAdquisicion CHAR(10) NOT NULL,
   ISBN CHAR(10) NOT NULL,
   tema VARCHAR2(20) NOT NULL,
@@ -66,7 +72,7 @@ CREATE TABLE directorTesis(
 
 
 CREATE TABLE tesis(
-  material_id VARCHAR2(5) NOT NULL,
+  material_id CHAR(5) NOT NULL,
   tesis_id CHAR(10) NOT NULL,
   carreraTema VARCHAR2(20) NOT NULL,
   anoPublicacion VARCHAR2(4) NOT NULL,
@@ -86,7 +92,7 @@ CREATE TABLE estatus(
 
 CREATE TABLE ejemplar(
   noEjemplar CHAR(3) NOT NULL,
-  material_id VARCHAR2(5) NOT NULL,
+  material_id CHAR(5) NOT NULL,
   estatus_id VARCHAR2(20) NOT NULL,
   CONSTRAINT Pkejemplar PRIMARY KEY (noEjemplar, material_id),
   CONSTRAINT Fkmaterial FOREIGN KEY (material_id)
@@ -132,7 +138,7 @@ CREATE TABLE prestamo(
   fechaVencimiento DATE NOT NULL,
   lector_id CHAR(10) NOT NULL,
   noEjemplar CHAR(3) NOT NULL,
-  material_id VARCHAR2(5) NOT NULL,
+  material_id CHAR(5) NOT NULL,
   CONSTRAINT Pkprestamo PRIMARY KEY (prestamo_id),
   CONSTRAINT Fklector FOREIGN KEY (lector_id)
   REFERENCES lector ON DELETE SET NULL,
