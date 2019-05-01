@@ -91,7 +91,7 @@ CREATE TABLE estatus(
   );
 
 CREATE TABLE ejemplar(
-  noEjemplar CHAR(3) NOT NULL,
+  noEjemplar CHAR(10) NOT NULL,
   material_id CHAR(5) NOT NULL,
   estatus_id VARCHAR2(20) NOT NULL,
   CONSTRAINT Pkejemplar PRIMARY KEY (noEjemplar, material_id),
@@ -104,9 +104,9 @@ CREATE TABLE ejemplar(
 CREATE TABLE tipoLector(
   tipolector_id CHAR(3) NOT NULL,
   descripcionTipoLector VARCHAR2(20) NOT NULL,
-  limiteDeMateriales CHAR(1) NOT NULL,
-  refrendos CHAR(1) NOT NULL,
-  diasPrestamo CHAR(1) NOT NULL,
+  limiteDeMateriales CHAR(5) NOT NULL,
+  refrendos CHAR(5) NOT NULL,
+  diasPrestamo CHAR(5) NOT NULL,
   CONSTRAINT PktipoLector PRIMARY KEY (tipolector_id) 
   );
 
@@ -137,7 +137,7 @@ CREATE TABLE prestamo(
   fechaPrestamo DATE DEFAULT SYSDATE NOT NULL,
   fechaVencimiento DATE NOT NULL,
   lector_id CHAR(10) NOT NULL,
-  noEjemplar CHAR(3) NOT NULL,
+  noEjemplar CHAR(10) NOT NULL,
   material_id CHAR(5) NOT NULL,
   CONSTRAINT Pkprestamo PRIMARY KEY (prestamo_id),
   CONSTRAINT Fklector FOREIGN KEY (lector_id)

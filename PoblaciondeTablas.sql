@@ -22,4 +22,22 @@ INSERT INTO directorTesis VALUES ('D1', 'Carlos', 'Ramirez', 'Fernandez', 'GA1')
 INSERT INTO directorTesis VALUES ('D2', 'Pedro', 'Miranda', 'Hector', 'GA2');
 INSERT INTO directorTesis VALUES ('D3', 'Esteban', 'Chavira', 'Vazquez', 'GA3');
 
-INSERT INTO tesis VALUES ('M2', )
+--INSERT INTO tesis VALUES ('M1', 'T1', 'Comunicaciones', '2008', 'D2');
+--INSERT INTO tesis VALUES ('M3', 'T2', 'Ingenieria', '2019', 'D1');
+--INSERT INTO tesis VALUES ('M2', 'T3', 'Electricos', '2007', 'D3');
+
+INSERT INTO estatus VALUES ('ES1', 'Disponible');
+INSERT INTO estatus VALUES ('ES2', 'Prestado');
+INSERT INTO estatus VALUES ('ES3', 'Perdido');
+
+--INSERT INTO ejemplar VALUES ('EJ1', 'M1', 'ES1');
+--INSERT INTO ejemplar VALUES ('EJ2', 'M2', 'ES1');
+--INSERT INTO ejemplar VALUES ('EJ3', 'M3', 'ES3');
+
+INSERT INTO tipoLector VALUES ('TL1', 'Estudiante', '3', '1','8' );
+INSERT INTO tipoLector VALUES ('TL2', 'Profesor', '5', '2','15' );
+INSERT INTO tipoLector VALUES ('TL3', 'Investigador', '10', '3','30' );
+
+INSERT INTO lector VALUES ('L1', '01/11/15', '55455442', '07/12/18', 'Carlos', 'Leon', 'Cano', 100, 'Campeche', '2', 'Arboles ','De la Barranca', 'Tlalpan', 'TL1');
+INSERT INTO lector VALUES ('L2', '07/01/11', '55455442', '07/12/18', 'Jorge', 'Cano', 'Valdez', 0, 'Puebla', '2', 'Arboles ','De la Barranca', 'Tlalpan', 'TL2');
+INSERT INTO lector VALUES ('L3', '01/03/12', '55455442', '07/12/18', 'Esteba', 'Hernandez', 'Juarez', 0, 'San Luis', '2', 'Arboles ','De la Barranca', 'Tlalpan', 'TL3');
