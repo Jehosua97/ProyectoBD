@@ -11,7 +11,6 @@ GRANT create session to proyecto;
 GRANT UNLIMITED TABLESPACE TO proyecto;
 
 
-
 --Desde usuario "proyecto"
 CREATE TABLE autor(
   autor_id CHAR(10) NOT NULL,

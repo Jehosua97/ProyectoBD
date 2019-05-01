@@ -48,6 +48,6 @@ INSERT INTO tipoLector VALUES ('TL3', 'Investigador', '10', '3','30' );
 --INSERT INTO prestamo VALUES ('P3', 2, '08/10/16', DATE, '10/10/16', 'L2', 'EJ2', 'M3');
 
 /*Calcular monto junto con los dias de retraso*/
-INSERT INTO multa VALUES ('MU1', 'P1', DATE, 9,'2');
-INSERT INTO multa VALUES ('MU2', 'P2', DATE, 10.2,'4');
-INSERT INTO multa VALUES ('MU3', 'P3', DATE, 12,'4');
+--INSERT INTO multa VALUES ('MU1', 'P1', DATE, 9,'2');
+--INSERT INTO multa VALUES ('MU2', 'P2', DATE, 10.2,'4');
+--INSERT INTO multa VALUES ('MU3', 'P3', DATE, 12,'4');
