@@ -22,17 +22,17 @@ INSERT INTO directorTesis VALUES ('D1', 'Carlos', 'Ramirez', 'Fernandez', 'GA1')
 INSERT INTO directorTesis VALUES ('D2', 'Pedro', 'Miranda', 'Hector', 'GA2');
 INSERT INTO directorTesis VALUES ('D3', 'Esteban', 'Chavira', 'Vazquez', 'GA3');
 
---INSERT INTO tesis VALUES ('M1', 'T1', 'Comunicaciones', '2008', 'D2');
---INSERT INTO tesis VALUES ('M3', 'T2', 'Ingenieria', '2019', 'D1');
---INSERT INTO tesis VALUES ('M2', 'T3', 'Electricos', '2007', 'D3');
+INSERT INTO tesis VALUES ('M1', 'T1', 'Comunicaciones', '2008', 'D2');
+INSERT INTO tesis VALUES ('M3', 'T2', 'Ingenieria', '2019', 'D1');
+INSERT INTO tesis VALUES ('M2', 'T3', 'Electricos', '2007', 'D3');
 
 INSERT INTO estatus VALUES ('ES1', 'Disponible');
 INSERT INTO estatus VALUES ('ES2', 'Prestado');
 INSERT INTO estatus VALUES ('ES3', 'Perdido');
 
---INSERT INTO ejemplar VALUES ('EJ1', 'M1', 'ES1');
---INSERT INTO ejemplar VALUES ('EJ2', 'M2', 'ES1');
---INSERT INTO ejemplar VALUES ('EJ3', 'M3', 'ES3');
+INSERT INTO ejemplar VALUES ('EJ1', 'M1', 'ES1');
+INSERT INTO ejemplar VALUES ('EJ2', 'M2', 'ES1');
+INSERT INTO ejemplar VALUES ('EJ3', 'M3', 'ES3');
 
 INSERT INTO tipoLector VALUES ('TL1', 'Estudiante', '3', '1','8' );
 INSERT INTO tipoLector VALUES ('TL2', 'Profesor', '5', '2','15' );

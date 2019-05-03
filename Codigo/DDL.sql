@@ -1,4 +1,4 @@
---Creando el usuario proyecto desde "scott" y dándole permisos LOL
+--Creando el usuario proyecto desde "scott" y dándole permisos
 CREATE USER proyecto IDENTIFIED BY proyecto;
 GRANT create table to proyecto;
 GRANT create sequence to proyecto;
