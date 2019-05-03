@@ -1,4 +1,4 @@
---Creando el usuario proyecto desde "scott" y dandole permisos
+--Creando el usuario proyecto desde "scott" y dándole permisos LOL
 CREATE USER proyecto IDENTIFIED BY proyecto;
 GRANT create table to proyecto;
 GRANT create sequence to proyecto;
@@ -78,7 +78,7 @@ CREATE TABLE tesis(
   CONSTRAINT PkTesis PRIMARY KEY (material_id),
   CONSTRAINT FkTesis FOREIGN KEY (material_id)
   REFERENCES material ON DELETE SET NULL,
-  CONSTRAINT Fktesis_id FOREIGN KEY (tesis_id)
+  CONSTRAINT Fktesis_id FOREIGN KEY (director_id)
   REFERENCES directorTesis ON DELETE SET NULL
   );
 
@@ -125,7 +125,7 @@ CREATE TABLE lector(
   tipolector_id CHAR(3) NOT NULL,
   CONSTRAINT Pklector PRIMARY KEY (lector_id),
   CONSTRAINT FktipoLector_id FOREIGN KEY (tipolector_id)
-  REFERENCES lector ON DELETE SET NULL
+  REFERENCES tipoLector ON DELETE SET NULL
   );
 
 CREATE TABLE prestamo(
