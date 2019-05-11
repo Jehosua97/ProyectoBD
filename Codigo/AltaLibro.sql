@@ -31,7 +31,7 @@ begin
     into vCantidadDeLibros
     from material;
     --se asigna a la variable pertinente
-    vMaterial_id:= vCantidadDeLibros+1;
+    vMaterial_id:= 'M'||(vCantidadDeLibros+1);
     --se inserta en la tabla material
     insert into material (material_id,ubicacion,colocacion,titulo)
     values(vMaterial_id,vUbicacion,vColocacion,vTitulo);
