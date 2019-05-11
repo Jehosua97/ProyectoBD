@@ -82,3 +82,5 @@ begin
 end;
 /
 show errors
+
+-----------6.- CHAVIRA          Fecha de vigencia de usuario, préstamo y refrendo de material a dicho usuario.
