@@ -38,16 +38,14 @@ INSERT INTO tipoLector VALUES ('TL1', 'Estudiante', '3', '1','8' );
 INSERT INTO tipoLector VALUES ('TL2', 'Profesor', '5', '2','15' );
 INSERT INTO tipoLector VALUES ('TL3', 'Investigador', '10', '3','30' );
 
---INSERT INTO lector VALUES ('L1', '01/11/15', '55455442', '07/12/18', 'Carlos', 'Leon', 'Cano', 100, 'Campeche', '2', 'Arboles ','De la Barranca', 'Tlalpan', 'TL1');
---INSERT INTO lector VALUES ('L2', '07/01/11', '55455442', '07/12/18', 'Jorge', 'Cano', 'Valdez', 0, 'Puebla', '2', 'Arboles ','De la Barranca', 'Tlalpan', 'TL2');
---INSERT INTO lector VALUES ('L3', '01/03/12', '55455442', '07/12/18', 'Esteba', 'Hernandez', 'Juarez', 0, 'San Luis', '2', 'Arboles ','De la Barranca', 'Tlalpan', 'TL3');
+INSERT INTO lector VALUES ('L1', '01/11/15', '55455442', '07/12/18', 'Carlos', 'Leon', 'Cano', 100, 'Campeche', '2', 'Arboles ','De la Barranca', 'Tlalpan', 'TL1');
+INSERT INTO lector VALUES ('L2', '07/01/11', '55455442', '07/12/18', 'Jorge', 'Cano', 'Valdez', 0, 'Puebla', '2', 'Arboles ','De la Barranca', 'Tlalpan', 'TL2');
+INSERT INTO lector VALUES ('L3', '01/03/12', '55455442', '07/12/18', 'Esteba', 'Hernandez', 'Juarez', 0, 'San Luis', '2', 'Arboles ','De la Barranca', 'Tlalpan', 'TL3');
 
-/*Modificar automaticamente FechaVencimiento, y controlar numero de "resello"*/
---INSERT INTO prestamo VALUES ('P1', 0, '08/10/16', DATE, '10/10/16', 'L1', 'EJ1', 'M1');
---INSERT INTO prestamo VALUES ('P2', 1, '08/10/16', DATE, '10/10/16', 'L3', 'EJ3', 'M2');
---INSERT INTO prestamo VALUES ('P3', 2, '08/10/16', DATE, '10/10/16', 'L2', 'EJ2', 'M3');
+INSERT INTO prestamo VALUES ('P1', 0, '08/10/16', SYSDATE, '10/10/16', 'L1', 'EJ1', 'M1');
+INSERT INTO prestamo VALUES ('P2', 1, '08/10/16', SYSDATE, '10/10/16', 'L3', 'EJ3', 'M3');
+INSERT INTO prestamo VALUES ('P3', 2, '08/10/16', SYSDATE, '10/10/16', 'L2', 'EJ2', 'M2');
 
-/*Calcular monto junto con los dias de retraso*/
-INSERT INTO multa VALUES ('MU1', 'P1', DATE, 9,'2');
-INSERT INTO multa VALUES ('MU2', 'P2', DATE, 10.2,'4');
-INSERT INTO multa VALUES ('MU3', 'P3', DATE, 12,'4');
+INSERT INTO multa VALUES ('MU1', 'P1', SYSDATE, 9,'2');
+INSERT INTO multa VALUES ('MU2', 'P2', SYSDATE, 10.2,'4');
+INSERT INTO multa VALUES ('MU3', 'P3', SYSDATE, 12,'4');
