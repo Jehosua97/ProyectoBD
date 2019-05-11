@@ -1,3 +1,5 @@
+SET SERVEROUTPUT ON
+
 --------------------------------------------1.-LIBRO. (Dar de alta el MATERIAL). -- Lázaro
 /*AltaLibro*/
 set serveroutput on
@@ -162,8 +164,56 @@ show errors;
 /*ActualizaDirTesis*/
 --------------------------------------------4.-EJEMPLAR.--Joya
 /*AltaEjemplar*/
+CREATE OR REPLACE PROCEDURE AltaEjemplar(
+  vnoEjemplar IN ejemplar.noEjemplar%TYPE,
+  vmaterial_id IN ejemplar.material_id%TYPE,
+  vestatus_id IN ejemplar.estatus_id%TYPE
+)
+AS
+BEGIN
+IF (vnoEjemplar)
+INSERT INTO ejemplar VALUES (vnoEjemplar, vmaterial_id,vestatus_id);
+COMMIT;
+DBMS_OUTPUT.PUT_LINE('Se insertó el ejemplar con id: ' || vnoEjemplar);
+END AltaEjemplar;
+/
+
 /*BajaEjemplar*/
+CREATE OR REPLACE PROCEDURE BajaEjemplar(
+  vnoEjemplar IN ejemplar.noEjemplar%TYPE
+)
+IS 
+  vestatus_id ejemplar.estatus_id%TYPE;
+BEGIN
+SELECT estatus_id INTO vestatus_id
+FROM ejemplar WHERE (vnoEjemplar = noEjemplar);
+IF (vestatus_id != 'ES2') THEN 
+  DELETE FROM ejemplar WHERE (vnoEjemplar = noEjemplar);
+  DBMS_OUTPUT.PUT_LINE('Se eliminó el ejemplar con id: ' || vnoEjemplar);
+  COMMIT;
+ELSE
+  DBMS_OUTPUT.PUT_LINE('El ejemplar con id ' || vnoEjemplar||' está en prestamo (No se puede eliminar)');
+END IF;
+END BajaEjemplar;
+/
+
 /*ActualizaEjemplar*/
+CREATE OR REPLACE PROCEDURE ActualizaEjemplar(
+  vnoEjemplar IN ejemplar.noEjemplar%TYPE,
+  vmaterial_id IN ejemplar.material_id%TYPE,
+  vestatus_id IN ejemplar.estatus_id%TYPE
+)
+AS
+BEGIN
+  UPDATE ejemplar 
+  SET  noEjemplar = vnoEjemplar,
+        material_id = vmaterial_id, 
+        estatus_id = vestatus_id 
+  WHERE vnoEjemplar = noEjemplar;
+  COMMIT;
+  DBMS_OUTPUT.PUT_LINE('Se actualizó ejemplar con id ' || vnoEjemplar);
+END ActualizaEjemplar;
+/
 --------------------------------------------5.-LECTOR. --Lázaro
 /*AltaLector*/
 create or replace procedure AltaLector(
@@ -328,5 +378,44 @@ show errors
 /*ActualizaMulta*/
 --------------------------------------------8.-GRADO ACADEMICO. –- Joya
 /*AltaGradoAcademico*/
+CREATE OR REPLACE PROCEDURE AltaGradoAcademico(
+  vgradoAcademico_id IN gradoAcademico.gradoAcademico_id%TYPE,
+  vdescripcionGA IN gradoAcademico.descripcionGA%TYPE
+)
+AS
+BEGIN
+  INSERT INTO gradoAcademico 
+  VALUES (vgradoAcademico_id, vdescripcionGA);
+  DBMS_OUTPUT.PUT_LINE('Se inserto un nuevo grado academico con id:  ' || vgradoAcademico_id);
+  COMMIT;
+END AltaGradoAcademico;
+/
+
 /*BajaGradoAcademico*/
+CREATE OR REPLACE PROCEDURE BajaGradoAcademico(
+    vgradoAcademico_id IN gradoAcademico.gradoAcademico_id%TYPE
+)
+AS 
+BEGIN 
+  DELETE gradoAcademico
+  WHERE vgradoAcademico_id = gradoAcademico_id;
+  COMMIT;
+  DBMS_OUTPUT.PUT_LINE('Se elimino el grado academico con id:  ' || vgradoAcademico_id);
+END BajaGradoAcademico;
+/
+
 /*ActualizaGradoAcademico*/
+CREATE OR REPLACE PROCEDURE ActualizaGradoAcademico(
+  vgradoAcademico_id IN gradoAcademico.gradoAcademico_id%TYPE,
+  vdescripcionGA IN gradoAcademico.descripcionGA%TYPE
+)
+AS
+BEGIN
+  UPDATE gradoAcademico
+  SET gradoAcademico_id = vgradoAcademico_id,
+        descripcionGA = vdescripcionGA
+  WHERE vgradoAcademico_id = gradoAcademico_id;
+  COMMIT;
+  DBMS_OUTPUT.PUT_LINE('Se actualizó el grado academico con id:  ' || vgradoAcademico_id);
+END ActualizaGradoAcademico;
+/

@@ -9,6 +9,7 @@ GRANT create ROLLBACK segment to proyecto;
 GRANT alter tablespace to proyecto;
 GRANT create session to proyecto;
 GRANT UNLIMITED TABLESPACE TO proyecto;
+SET SERVEROUTPUT ON
 /*Para iniciar desde cero teclear desde scott drop user proyecto cascade;*/
 
 --Desde usuario "proyecto"
