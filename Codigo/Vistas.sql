@@ -19,3 +19,4 @@ from material
 join ejemplar using(material_id)
 join estatus using(estatus_id);
 --------------------5.- OSCAR       Vista de LECTOR por tipo.
+
