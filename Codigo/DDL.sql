@@ -27,7 +27,9 @@ CREATE TABLE material(
   ubicacion VARCHAR2(20) NOT NULL,
   colocacion VARCHAR2(20) NOT NULL,
   titulo VARCHAR2(20) NOT NULL,
-  CONSTRAINT PkMaterial PRIMARY KEY (material_id)
+  tipoMaterial CHAR(1) NOT NULL,
+  CONSTRAINT PkMaterial PRIMARY KEY (material_id),
+  CONSTRAINT CktipoMaterial CHECK (tipoMaterial = 'L' OR tipoMaterial = 'T') 
   );
 
 CREATE TABLE escribe(

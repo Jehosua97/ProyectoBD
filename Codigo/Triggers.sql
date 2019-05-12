@@ -49,7 +49,28 @@ show errors;
 
 -----------2.- OSCAR          Al realizarse el préstamo de un ejemplar, se deberá de modificar su estatus automáticamente. -- Oscar
 -----------3.- CHAVIRA        El resello de un material se realiza únicamente en la fecha de vencimiento del préstamo en función del tipo de lector. -- Chavira
------------4.- JOYA           Al realizarse una devolución en tiempo, se eliminará el préstamo.-- Joya
+-----------4.- JOYA           Al realizarse una devolución en tiempo, se eliminará el préstamo.
+  CREATE OR REPLACE TRIGGER tgDevolEliminPrest
+  BEFORE DELETE 
+  ON prestamo
+  FOR EACH ROW
+  DECLARE
+    vprestamo_id CHAR(5);
+    vmulta_id CHAR(10);
+    vfechaMulta DATE;
+  BEGIN 
+    SELECT multa_id, prestamo_id, fechaMulta
+    INTO vmulta_id, vprestamo_id, vfechaMulta
+    FROM multa
+    WHERE prestamo_id = :old.prestamo_id;
+    IF vfechaMulta >= SYSDATE THEN
+      DBMS_OUTPUT.PUT_LINE('Se eliminó prestamo con id ' ||  :old.prestamo_id);
+    ELSE
+      Raise_Application_Error(-20099, 'No puedes eliminar este registro, tiene multa');    
+    END IF;
+  END tgDevolEliminPrest;
+  /
+
 -----------5.- LAZARO         Al resellar el préstamo de un material, la fecha del préstamo cambiará a la fecha en la que se resella, la fecha de vencimiento se volverá a calcular dependiendo del tipo de lector y se actualizará el número de refrendo. -- Lázaro
 create or replace trigger tgValidaReselloPrestamo
   before update

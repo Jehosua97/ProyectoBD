@@ -2,9 +2,9 @@ INSERT INTO autor VALUES ('A1', 'Juan', 'Jose', 'Venegas', 'Mexicano');
 INSERT INTO autor VALUES ('A2', 'Jose', 'Jose', 'Venegas', 'Aleman');
 INSERT INTO autor VALUES ('A3', 'Pedro', 'Martin', 'Venegas', 'Mexicano');
 
-INSERT INTO material VALUES ('M1','Sotano', 'Arriba', 'Pollito' );
-INSERT INTO material VALUES ('M2','Primer Piso', 'Abajo', 'Caballo' );
-INSERT INTO material VALUES ('M3','Segundo Piso', 'Arriba', 'Borrego' );
+INSERT INTO material VALUES ('M1','Sotano', 'Arriba', 'Pollito', 'L' );
+INSERT INTO material VALUES ('M2','Primer Piso', 'Abajo', 'Caballo', 'L' );
+INSERT INTO material VALUES ('M3','Segundo Piso', 'Arriba', 'Borrego', 'T' );
 
 INSERT  INTO escribe VALUES ('M2','A1');
 INSERT  INTO escribe VALUES ('M1','A2');
