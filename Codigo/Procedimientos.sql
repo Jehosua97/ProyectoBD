@@ -1,4 +1,4 @@
-SET SERVEROUTPUT ON
+VARCHAR2SET SERVEROUTPUT ON
 
 --------------------------------------------1.-LIBRO. (Dar de alta el MATERIAL). -- Lázaro
 /*AltaLibro*/
@@ -67,7 +67,7 @@ begin
   --se cuenta cuantos prestamos hay de ese libro
   select count(*)
   into vPrestamos
-  from prestamo 
+  from prestamo
   where material_id=vMaterial_id;
   --se cuenta cuantos ejemplares hay de ese libro
   select count(*)
@@ -156,8 +156,80 @@ show errors;
 
 --------------------------------------------2.-TESIS. (Dar de alta el MATERIAL). — Oscar
 /*AltaTesis*/
+set serveroutput on
+CREATE OR REPLACE PROCEDURE AltaTesis(
+  v_material_id     IN tesis.material_id%TYPE,
+  v_tesis_id        IN tesis.tesis_id%TYPE,
+  v_carreraTema     IN tesis.carreraTema%TYPE,
+  v_añoPublicacion  IN tesis.añoPublicacion%TYPE,
+  v_director_id     IN tesis.director_id%TYPE
+)
+AS
+BEGIN
+  INSERT INTO tesis
+  VALUES (vMaterial_id, v_tesis_id, v_carreraTema, v_añoPublicacion, v_director_id);
+  DBMS_OUTPUT.PUT_LINE('Se inserto un nuevo material tipo tesis:  ' || vMaterial_id);
+  COMMIT;
+END AltaTesis;
+/
+
 /*BajaTesis*/
+CREATE OR REPLACE PROCEDURE BajaTesis(
+  v_material_id     IN tesis.material_id%TYPE
+)
+AS
+BEGIN
+  DELETE tesis
+  WHERE material_id = v_material_id;
+  COMMIT;
+  DBMS_OUTPUT.PUT_LINE('Se elimino el material tipo tesis con id:  ' || vgradoAcademico_id);
+END BajaTesis;
+/
+
 /*ActualizaTesis*/
+CREATE OR REPLACE PROCEDURE ActualizaTesis(
+  vMaterial_id IN CHAR,
+  vCampo IN varchar2,
+  vValor IN VARCHAR2
+)
+is
+BEGIN
+  CASE
+    WHEN UPPER(vCampo) = 'UBICACION' THEN
+      UPDATE material SET ubicacion=vValor
+      WHERE material_id = vMaterial_id;
+
+    WHEN UPPER(vCampo) = 'COLOCACION' THEN
+      UPDATE material SET colocacion=vValor
+      WHERE material_id = vMaterial_id;
+
+    WHEN UPPER(vCampo) = 'TITULO' THEN
+      UPDATE material SET titulo=vValor
+      WHERE material_id = vMaterial_id;
+
+    WHEN UPPER(vCampo) = 'TESIS_ID' THEN
+      UPDATE tesis SET tesis_id=vValor
+      WHERE material_id = vMaterial_id;
+
+    WHEN UPPER(vCampo) = 'CARRERATEMA' THEN
+      UPDATE tesis SET carreraTema=vValor
+      WHERE material_id = vMaterial_id;
+
+    WHEN UPPER(vCampo) = 'AÑOPUBLICACION' THEN
+      UPDATE tesis SET añoPublicacion=vValor
+      WHERE material_id = vMaterial_id;
+
+    WHEN UPPER(vCampo) = 'DIRECTOR_ID' THEN
+      UPDATE tesis SET director_id=vValor
+      WHERE material_id = vMaterial_id;
+
+    else
+      raise_application_error(-20054,'ERROR No existe ese campo');
+
+  end case;
+end;
+/
+
 --------------------------------------------3.-DIRECTOR DE TESIS.--Chavira
 /*AltaDirTesis*/
 /*BajaDirTesis*/
@@ -182,12 +254,12 @@ END AltaEjemplar;
 CREATE OR REPLACE PROCEDURE BajaEjemplar(
   vnoEjemplar IN ejemplar.noEjemplar%TYPE
 )
-IS 
+IS
   vestatus_id ejemplar.estatus_id%TYPE;
 BEGIN
 SELECT estatus_id INTO vestatus_id
 FROM ejemplar WHERE (vnoEjemplar = noEjemplar);
-IF (vestatus_id != 'ES2') THEN 
+IF (vestatus_id != 'ES2') THEN
   DELETE FROM ejemplar WHERE (vnoEjemplar = noEjemplar);
   DBMS_OUTPUT.PUT_LINE('Se eliminó el ejemplar con id: ' || vnoEjemplar);
   COMMIT;
@@ -205,10 +277,10 @@ CREATE OR REPLACE PROCEDURE ActualizaEjemplar(
 )
 AS
 BEGIN
-  UPDATE ejemplar 
+  UPDATE ejemplar
   SET  noEjemplar = vnoEjemplar,
-        material_id = vmaterial_id, 
-        estatus_id = vestatus_id 
+        material_id = vmaterial_id,
+        estatus_id = vestatus_id
   WHERE vnoEjemplar = noEjemplar;
   COMMIT;
   DBMS_OUTPUT.PUT_LINE('Se actualizó ejemplar con id ' || vnoEjemplar);
@@ -227,7 +299,7 @@ create or replace procedure AltaLector(
   vCalle in varchar2,
   vColonia in varchar2,
   vDelegacion in varchar2,
-  vTipoLector_id in char 
+  vTipoLector_id in char
 )
 is
   vCantidadDeTipos number;
@@ -275,7 +347,7 @@ begin
   if vCantidadDePrestamos = 0 then
     delete from lector where lector_id=vLector_id;
   else
-    raise_application_error(-20054,'ERROR No se puede eliminar al lector 
+    raise_application_error(-20054,'ERROR No se puede eliminar al lector
       mientras tenga prestamos en curso, se encontraron '
       ||vCantidadDePrestamos
       ||' prestamos registrados');
@@ -364,14 +436,102 @@ begin
     else
       raise_application_error(-20054,'ERROR No existe ese campo');
 
-  end case; 
+  end case;
 end;
 /
 show errors
 --------------------------------------------6.-PRESTAMO. -- Oscar
 /*AltaPrestamo*/
+set serveroutput on
+CREATE OR REPLACE PROCEDURE AltaPrestamo(
+  v_prestamoId  IN prestamo.prestamoId%TYPE,
+  v_resello     IN prestamo.resello%TYPE,
+  v_lector_id   IN prestamo.lecotr_id%TYPE,
+  v_noEjemplar  IN prestamo.noEjemplar%TYPE,
+  v_material_id IN prestamo.material_id%TYPE,
+)
+AS
+v_fechaPrestamo DATE := SYSDATE;
+v_fechaVencimiento DATE := SYSDATE + 5;
+BEGIN
+  INSERT INTO prestamo
+  VALUES (v_prestamoId, v_resello, NULL, v_fechaPrestamo, v_fechaVencimiento,,v_lector_id, v_noEjemplar, v_material_id);
+  DBMS_OUTPUT.PUT_LINE('Se realizó el prestamo del material:  ' || v_material_id|| ' Al lector: '|| v_lector_id);
+  COMMIT;
+END AltaPrestamo;
+/
+
 /*BajaPrestamo*/
+CREATE OR REPLACE PROCEDURE BajaPrestamo(
+  v_prestamoId  IN prestamo.prestamoId%TYPE,
+)
+AS
+BEGIN
+  DELETE prestamo
+  WHERE prestamoId = v_prestamoId;
+  COMMIT;
+  DBMS_OUTPUT.PUT_LINE('Se ha devuelto el material:  ' || v_material_id);
+END BajaPrestamo;
+/
+
 /*ActualizaPrestamo*/
+CREATE OR REPLACE PROCEDURE ActualizaPrestamo(
+  vprestamoId IN CHAR,
+  vCampo IN varchar2,
+  vValor IN VARCHAR2
+)
+is
+vFecha DATE;
+BEGIN
+  CASE
+    WHEN UPPER(vCampo) = 'RESELLO' THEN
+      UPDATE prestamo SET resello = vValor
+      WHERE prestamoId = vprestamoId;
+
+    WHEN UPPER(vCampo) = 'FECHARESELLO' THEN
+      IF TO_DATE(vValor,'dd/mm/yy') = SYSDATE THEN
+        vFecha := SYSDATE;
+      ELSE
+        vFecha := TO_DATE(vValor,'dd/mm/yy');
+      END if;
+
+      UPDATE prestamo
+      SET fecharesello = vFecha,
+          fechaVencimiento = vFecha+5
+      WHERE prestamoID = vprestamoId;
+
+    WHEN UPPER(vCampo) = 'FECHAPRESTAMO' THEN
+
+      IF TO_DATE(vValor,'dd/mm/yy') = SYSDATE THEN
+        vFecha := SYSDATE;
+      ELSE
+        vFecha := TO_DATE(vValor,'dd/mm/yy');
+      END if;
+
+      UPDATE prestamo
+      SET fechaPrestamo = vFecha,
+          fechaVencimiento = vFecha+5
+          WHERE prestamoID = vprestamoId;
+
+    WHEN UPPER(vCampo) = 'LECTOR_ID' THEN
+      UPDATE prestamo SET lecotr_id = vValor
+      WHERE prestamoId = vprestamoId;
+
+    WHEN UPPER(vCampo) = 'NOEJEMPLAR' THEN
+      UPDATE prestamo SET noEjemplar = vValor
+      WHERE prestamoId = vprestamoId;
+
+    WHEN UPPER(vCampo) = 'MATERIAL_ID' THEN
+      UPDATE prestamo SET material_id = vValor
+      WHERE prestamoId = vprestamoId;
+
+    else
+      raise_application_error(-20054,'ERROR No existe ese campo');
+
+  end case;
+end;
+/
+
 --------------------------------------------7.-MULTA. – Chavira
 /*AltaMulta*/
 /*BajaMulta*/
@@ -384,7 +544,7 @@ CREATE OR REPLACE PROCEDURE AltaGradoAcademico(
 )
 AS
 BEGIN
-  INSERT INTO gradoAcademico 
+  INSERT INTO gradoAcademico
   VALUES (vgradoAcademico_id, vdescripcionGA);
   DBMS_OUTPUT.PUT_LINE('Se inserto un nuevo grado academico con id:  ' || vgradoAcademico_id);
   COMMIT;
@@ -395,8 +555,8 @@ END AltaGradoAcademico;
 CREATE OR REPLACE PROCEDURE BajaGradoAcademico(
     vgradoAcademico_id IN gradoAcademico.gradoAcademico_id%TYPE
 )
-AS 
-BEGIN 
+AS
+BEGIN
   DELETE gradoAcademico
   WHERE vgradoAcademico_id = gradoAcademico_id;
   COMMIT;
