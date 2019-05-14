@@ -109,7 +109,7 @@ show errors
 /*ActualizaLibro*/
 create or replace procedure ActualizaLibro(
   --se indican tres parametros, el id del material libro a actualizar
-  --el campo que se actualiza y el valor del campo
+  --el campo que se actualiza en MAYUSCULAS y el valor del campo
   vMaterial_id in char,
   vCampo in varchar2,
   vValor in varchar2
@@ -147,9 +147,10 @@ begin
       where material_id = vMaterial_id;
 
     else
-      raise_application_error(-20054,'ERROR No existe ese campo');
+      raise_application_error(-20054,'ERROR No existe ese campo, o no lo puede modificar');
 
   end case;
+  COMMIT;
 end;
 /
 show errors;
@@ -237,13 +238,12 @@ end;
 --------------------------------------------4.-EJEMPLAR.--Joya
 /*AltaEjemplar*/
 CREATE OR REPLACE PROCEDURE AltaEjemplar(
-  vnoEjemplar IN ejemplar.noEjemplar%TYPE,
-  vmaterial_id IN ejemplar.material_id%TYPE,
-  vestatus_id IN ejemplar.estatus_id%TYPE
+  vnoEjemplar IN CHAR,
+  vmaterial_id IN CHAR,
+  vestatus_id IN VARCHAR2
 )
 AS
 BEGIN
-IF (vnoEjemplar)
 INSERT INTO ejemplar VALUES (vnoEjemplar, vmaterial_id,vestatus_id);
 COMMIT;
 DBMS_OUTPUT.PUT_LINE('Se insertó el ejemplar con id: ' || vnoEjemplar);
@@ -259,7 +259,7 @@ IS
 BEGIN
 SELECT estatus_id INTO vestatus_id
 FROM ejemplar WHERE (vnoEjemplar = noEjemplar);
-IF (vestatus_id != 'ES2') THEN
+IF (vestatus_id <> 'ES2') THEN
   DELETE FROM ejemplar WHERE (vnoEjemplar = noEjemplar);
   DBMS_OUTPUT.PUT_LINE('Se eliminó el ejemplar con id: ' || vnoEjemplar);
   COMMIT;
@@ -272,18 +272,22 @@ END BajaEjemplar;
 /*ActualizaEjemplar*/
 CREATE OR REPLACE PROCEDURE ActualizaEjemplar(
   vnoEjemplar IN ejemplar.noEjemplar%TYPE,
-  vmaterial_id IN ejemplar.material_id%TYPE,
-  vestatus_id IN ejemplar.estatus_id%TYPE
+  vCampo in varchar2,
+  vValor in varchar2
 )
 AS
 BEGIN
-  UPDATE ejemplar
-  SET  noEjemplar = vnoEjemplar,
-        material_id = vmaterial_id,
-        estatus_id = vestatus_id
-  WHERE vnoEjemplar = noEjemplar;
+  CASE
+    when upper(vCampo) = 'NOEJEMPLAR' then
+      UPDATE ejemplar SET  noEjemplar = vValor
+      WHERE vnoEjemplar = noEjemplar;
+    when upper(vCampo) = 'MATERIAL_ID' then
+      UPDATE ejemplar SET  material_id = vValor
+      WHERE vnoEjemplar = noEjemplar;
+  ELSE
+    raise_application_error(-20051,'ERROR No existe ese campo, o usted no lo puede modificar');
+  END CASE;
   COMMIT;
-  DBMS_OUTPUT.PUT_LINE('Se actualizó ejemplar con id ' || vnoEjemplar);
 END ActualizaEjemplar;
 /
 --------------------------------------------5.-LECTOR. --Lázaro

@@ -10,9 +10,9 @@ INSERT  INTO escribe VALUES ('M2','A1');
 INSERT  INTO escribe VALUES ('M1','A2');
 INSERT  INTO escribe VALUES ('M3','A1');
 
-INSERT INTO libro VALUES ('M2', '06/12/17', 'ISBN1', 'Algebra', 'Segunda');
-INSERT INTO libro VALUES ('M3', '06/07/15', 'ISBN2', 'Vectorial', 'Segunda');
-INSERT INTO libro VALUES ('M1', '07/02/19', 'ISBN3', 'Calculo', 'Tercera');
+INSERT INTO libro VALUES ('M2', '1L', 'ISBN1', 'Algebra', 'Segunda');
+INSERT INTO libro VALUES ('M3', '2L', 'ISBN2', 'Vectorial', 'Segunda');
+INSERT INTO libro VALUES ('M1', '3L', 'ISBN3', 'Calculo', 'Tercera');
 
 INSERT INTO gradoAcademico VALUES ('GA1', 'Kinder');
 INSERT INTO gradoAcademico VALUES ('GA2', 'Secu');
@@ -31,8 +31,8 @@ INSERT INTO estatus VALUES ('ES2', 'Prestado');
 INSERT INTO estatus VALUES ('ES3', 'Perdido');
 
 INSERT INTO ejemplar VALUES ('EJ1', 'M1', 'ES1');
-INSERT INTO ejemplar VALUES ('EJ2', 'M2', 'ES1');
-INSERT INTO ejemplar VALUES ('EJ3', 'M3', 'ES3');
+INSERT INTO ejemplar VALUES ('EJ2', 'M2', 'ES2');
+INSERT INTO ejemplar VALUES ('EJ3', 'M3', 'ES2');
 
 INSERT INTO tipoLector VALUES ('TL1', 'Estudiante', '3', '1','8' );
 INSERT INTO tipoLector VALUES ('TL2', 'Profesor', '5', '2','15' );
