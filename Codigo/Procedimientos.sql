@@ -232,7 +232,48 @@ end;
 
 --------------------------------------------3.-DIRECTOR DE TESIS.--Chavira
 /*AltaDirTesis*/
+CREATE OR REPLACE PROCEDURE AltaDirTesis(
+  vDirector_id IN directorTesis.director_id%TYPE,
+  -- Se ingresará la descripción del Grado Académico. Se buscará el id.
+  vGradoAcademicoDescrip IN gradoAcademico.descripcionGA%TYPE,
+  -- Se mandan al final los parámetros para poder admitir un Apellido
+  -- Materno nulo al final (no se manda valor en ejecución).
+  vNombreDirector IN directorTesis.nombreDirector%TYPE,
+  vApPaternoDirector IN directorTesis.apPaternoDirector%TYPE,
+  vApMaternoDirector IN directorTesis.apMaternoDirector%TYPE DEFAULT NULL
+)
+AS
+vBuscaGradoAcademico directorTesis.gradoAcademico_id%TYPE;
+BEGIN
+SELECT gradoAcademico_id INTO vBuscaGradoAcademico
+FROM gradoAcademico WHERE descripcionGA=vGradoAcademicoDescrip;
+IF (vBuscaGradoAcademico IS NOT NULL) THEN
+  INSERT INTO directorTesis
+  VALUES(vDirector_id, vNombreDirector, vApPaternoDirector, vApMaternoDirector, vBuscaGradoAcademico);
+ELSE
+  DBMS_OUTPUT.PUT_LINE('No se encontró registrado el grado de ' ||vGradoAcademicoDescrip);
+END IF;
+COMMIT;
+DBMS_OUTPUT.PUT_LINE('Se insertó al director de tesis con id: '|| vDirector_id);
+END AltaDirTesis;
+/
+/* EJECUCION:
+EXEC AltaDirTesis(director_id, gradoEnTexto, Nombre, ApPat, ApMat);
+- gradoEnTexto, por ejemplo: 'Kinder', 'Secu', de la tabla gradoAcademico
+- apMat se puede ignorar:
+EXEC AltaDirTesis(director_id, gradoEnTexto, Nombre, ApPat); */
+
 /*BajaDirTesis*/
+CREATE OR REPLACE PROCEDURE BajaDirTesis(
+  vDirector_id directorTesis.director_id%TYPE
+)
+AS
+BEGIN
+DELETE FROM directorTesis WHERE director_id=vDirector_id;
+COMMIT;
+END BajaDirTesis;
+/
+
 /*ActualizaDirTesis*/
 --------------------------------------------4.-EJEMPLAR.--Joya
 /*AltaEjemplar*/
