@@ -233,8 +233,81 @@ end;
 
 --------------------------------------------3.-DIRECTOR DE TESIS.--Chavira
 /*AltaDirTesis*/
+CREATE OR REPLACE PROCEDURE AltaDirTesis(
+  vDirector_id IN directorTesis.director_id%TYPE,
+  -- Se ingresará la descripción del Grado Académico. Se buscará el id.
+  vGradoAcademicoDescrip IN gradoAcademico.descripcionGA%TYPE,
+  -- Se mandan al final los parámetros para poder admitir un Apellido
+  -- Materno nulo al final (no se manda valor en la ejecución).
+  vNombreDirector IN directorTesis.nombreDirector%TYPE,
+  vApPaternoDirector IN directorTesis.apPaternoDirector%TYPE,
+  vApMaternoDirector IN directorTesis.apMaternoDirector%TYPE DEFAULT NULL
+)
+AS
+vBuscaGradoAcademico directorTesis.gradoAcademico_id%TYPE;
+BEGIN
+SELECT gradoAcademico_id INTO vBuscaGradoAcademico
+FROM gradoAcademico WHERE descripcionGA=vGradoAcademicoDescrip;
+IF (vBuscaGradoAcademico IS NOT NULL) THEN
+  INSERT INTO directorTesis
+  VALUES(vDirector_id, vNombreDirector, vApPaternoDirector, vApMaternoDirector, vBuscaGradoAcademico);
+  DBMS_OUTPUT.PUT_LINE('Se insertó al director de tesis con id: '|| vDirector_id);
+ELSE
+  DBMS_OUTPUT.PUT_LINE('No se encontró registrado el grado de ' ||vGradoAcademicoDescrip);
+END IF;
+COMMIT;
+END AltaDirTesis;
+/
+/* EJECUCION:
+EXEC AltaDirTesis(director_id, gradoEnTexto, Nombre, ApPat, ApMat);
+- gradoEnTexto, por ejemplo: 'Kinder', 'Secu', de la tabla gradoAcademico
+- apMat se puede ignorar:
+EXEC AltaDirTesis(director_id, gradoEnTexto, Nombre, ApPat); */
+
 /*BajaDirTesis*/
+CREATE OR REPLACE PROCEDURE BajaDirTesis(
+  vDirector_id directorTesis.director_id%TYPE
+)
+AS
+vBuscaGradoAcademico directorTesis.gradoAcademico_id%TYPE;
+BEGIN
+DELETE FROM directorTesis WHERE director_id=vDirector_id;
+DBMS_OUTPUT.PUT_LINE('Se eliminó al director de tesis con id: ' ||vDirector_id);
+COMMIT;
+END BajaDirTesis;
+/
+
 /*ActualizaDirTesis*/
+CREATE OR REPLACE PROCEDURE ActualizaDirTesis(
+  vDirector_id IN directorTesis.director_id%TYPE,
+  -- Se ingresará la descripción del Grado Académico. Se buscará el id.
+  vGradoAcademicoDescrip IN gradoAcademico.descripcionGA%TYPE,
+  -- Se mandan al final los parámetros para poder admitir un Apellido
+  -- Materno nulo al final (no se manda valor en la ejecución).
+  vNombreDirector IN directorTesis.nombreDirector%TYPE,
+  vApPaternoDirector IN directorTesis.apPaternoDirector%TYPE,
+  vApMaternoDirector IN directorTesis.apMaternoDirector%TYPE DEFAULT NULL
+)
+AS
+vBuscaGradoAcademico directorTesis.gradoAcademico_id%TYPE;
+BEGIN
+SELECT gradoAcademico_id INTO vBuscaGradoAcademico
+FROM gradoAcademico WHERE descripcionGA=vGradoAcademicoDescrip;
+IF (vBuscaGradoAcademico IS NOT NULL) THEN
+  UPDATE directorTesis SET
+    nombreDirector=vNombreDirector,
+    apPaternoDirector=vApPaternoDirector,
+    apMaternoDirector=vApMaternoDirector,
+    gradoAcademico_id=vBuscaGradoAcademico
+  WHERE director_id=vDirector_id;
+  DBMS_OUTPUT.PUT_LINE('Se insertó al director de tesis con id: '|| vDirector_id);
+ELSE
+  DBMS_OUTPUT.PUT_LINE('No se encontró registrado el grado de ' ||vGradoAcademicoDescrip);
+END IF;
+--COMMIT;
+END ActualizaDirTesis;
+/
+
 --------------------------------------------4.-EJEMPLAR.--Joya
 /*AltaEjemplar*/
 CREATE OR REPLACE PROCEDURE AltaEjemplar(
@@ -538,8 +611,55 @@ end;
 
 --------------------------------------------7.-MULTA. – Chavira
 /*AltaMulta*/
+CREATE OR REPLACE PROCEDURE AltaMulta(
+  vMulta_id multa.multa_id%TYPE,
+  vPrestamo_id multa.prestamo_id%TYPE
+)
+AS
+BEGIN
+  INSERT INTO multa
+  VALUES(vMulta_id, vPrestamo_id, SYSDATE, 0, 0);
+  DBMS_OUTPUT.PUT_LINE('Se insertó una nueva multa con id: ' || vMulta_id);
+  COMMIT;
+END AltaMulta;
+/
+
 /*BajaMulta*/
-/*ActualizaMulta*/
+CREATE OR REPLACE PROCEDURE BajaMulta(
+  vMulta_id multa.multa_id%TYPE
+)
+AS
+BEGIN
+  DELETE FROM multa
+  WHERE multa_id=vMulta_id;
+  DBMS_OUTPUT.PUT_LINE('Se eliminó la multa con id: ' || vMulta_id);
+END BajaMulta;
+/
+
+/*ActualizaDiasMulta*/ -- REVISAR CONVERSION A TRIGGER...
+CREATE OR REPLACE PROCEDURE ActualizaDiasMulta
+AS
+vMulta_id multa.multa_id%TYPE;
+vFechaMulta multa.fechaMulta%TYPE;
+CURSOR cursorMultas IS
+  SELECT multa_id, fechaMulta
+  FROM multa;
+BEGIN
+  OPEN cursorMultas;
+  LOOP
+    FETCH cursorMultas
+    INTO vMulta_id, vFechaMulta;
+    UPDATE multa SET
+      diasRetraso=TRUNC(SYSDATE-vFechaMulta),
+      monto=(TRUNC((SYSDATE-vFechaMulta))*10)
+    WHERE multa_id=vMulta_id;
+  EXIT WHEN cursorMultas%NOTFOUND;
+  END LOOP;
+  CLOSE cursorMultas;
+END ActualizaDiasMulta;
+/
+
+
 --------------------------------------------8.-GRADO ACADEMICO. –- Joya
 /*AltaGradoAcademico*/
 CREATE OR REPLACE PROCEDURE AltaGradoAcademico(

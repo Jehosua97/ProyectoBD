@@ -78,7 +78,7 @@ CREATE TABLE tesis(
   tesis_id CHAR(10) NOT NULL,
   carreraTema VARCHAR2(20) NOT NULL,
   anoPublicacion VARCHAR2(4) NOT NULL,
-  director_id CHAR(10) NOT NULL,
+  director_id CHAR(10) NULL,
   CONSTRAINT PkTesis PRIMARY KEY (material_id),
   CONSTRAINT FkTesis FOREIGN KEY (material_id)
   REFERENCES material ON DELETE SET NULL,
