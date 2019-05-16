@@ -13,6 +13,7 @@ SET SERVEROUTPUT ON
 /*Para iniciar desde cero teclear desde scott drop user proyecto cascade;*/
 
 --Desde usuario "proyecto"
+--Actualizar la tabla Multa en el modelo relacional*****************************************************
 CREATE TABLE autor(
   autor_id CHAR(10) NOT NULL,
   nombreAutor VARCHAR2(20) NOT NULL,
@@ -51,7 +52,7 @@ CREATE TABLE libro(
   CONSTRAINT PkLibro PRIMARY KEY (material_id),
   CONSTRAINT FkLibro FOREIGN KEY (material_id)
   REFERENCES material ON DELETE SET NULL,
-  CONSTRAINT AkLibro1 UNIQUE (noAdquisicion),
+  CONSTRAINT AkLibro1 UNIQUE(noAdquisicion),
   CONSTRAINT AkLibro2 UNIQUE (ISBN)
   );
 
@@ -150,9 +151,11 @@ CREATE TABLE prestamo(
 
 CREATE TABLE multa(
   multa_id CHAR(10) NOT NULL,
-  prestamo_id CHAR(5) NOT NULL,
+  lector_id CHAR(5) NOT NULL,
   fechaMulta DATE DEFAULT SYSDATE NOT NULL,
   monto NUMBER(10,2),
-  diasRetraso CHAR(6),
-  CONSTRAINT Pkmulta PRIMARY KEY (multa_id, prestamo_id)
+  diasRetraso number(6,0),
+  CONSTRAINT Pkmulta PRIMARY KEY (multa_id, prestamo_id),
+  CONSTRAITN FkLectorId FOREIGN KEY (lector_id)
+  REFERENCES lector IN DELETE SET NULL
   );
