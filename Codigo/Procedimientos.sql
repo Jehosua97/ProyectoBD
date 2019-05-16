@@ -632,23 +632,7 @@ BEGIN
 END BajaMulta;
 /
 
-/*ActualizaMulta*/
--- Sólo se permite editar la fecha, porque lo demás
--- son llaves o valores calculados.
-CREATE OR REPLACE PROCEDURE ActualizaMulta(
-  vMulta_id multa.multa_id%TYPE,
-  vFechaMulta multa.fechaMulta%TYPE
-)
-AS
-BEGIN
-  UPDATE multa SET fechaMulta=vFechaMulta
-  WHERE multa_id=vMulta_id;
-  COMMIT;
-  DBMS_OUTPUT.PUT_LINE('Se actualizó la fecha de la multa con id: ' || vMulta_id);
-END ActualizaMulta;
-/
-
-/*ActualizaDiasMulta*/
+/*ActualizaDiasMulta*/ -- REVISAR CONVERSION A TRIGGER...
 CREATE OR REPLACE PROCEDURE ActualizaDiasMulta
 AS
 vMulta_id multa.multa_id%TYPE;
