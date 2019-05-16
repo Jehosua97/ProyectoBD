@@ -74,24 +74,35 @@ END T_prestamo_ejemplar;
 /
 
 -----------3.- CHAVIRA        El resello de un material se realiza únicamente en la fecha de vencimiento del préstamo en función del tipo de lector. -- Chavira
------------4.- JOYA           Al realizarse una devolución en tiempo, se eliminará el préstamo.
+-----------4.- JOYA           Al realizarse una devolución en tiempo, se eliminará el préstamo y/o se generará una multa. 
+  CREATE OR REPLACE PACKAGE pkprestamo
+    AS
+      PRESTAMO_ID CHAR(5),
+      RESELLO NUMBER,
+      FECHARESELLO DATE,
+      FECHAPRESTAMO DATE,
+      FECHAVENCIMIENTO DATE,
+      LECTOR_ID CHAR(10),
+      NOEJEMPLAR CHAR(10),
+      MATERIAL_ID CHAR(5)
+  END;
+
   CREATE OR REPLACE TRIGGER tgDevolEliminPrest
   BEFORE DELETE
   ON prestamo
   FOR EACH ROW
   DECLARE
     vprestamo_id CHAR(5);
-    vmulta_id CHAR(10);
-    vfechaMulta DATE;
+    vfechaVenci DATE;
   BEGIN
-    SELECT multa_id, prestamo_id, fechaMulta
-    INTO vmulta_id, vprestamo_id, vfechaMulta
-    FROM multa
+    SELECT prestamo_id, fechaVencimiento INTO vprestamo_id, vfechaVenci
+    FROM prestamo
     WHERE prestamo_id = :old.prestamo_id;
-    IF vfechaMulta >= SYSDATE THEN
+    IF vfechaVenci >= SYSDATE THEN
       DBMS_OUTPUT.PUT_LINE('Se eliminó prestamo con id ' ||  :old.prestamo_id);
     ELSE
-      Raise_Application_Error(-20099, 'No puedes eliminar este registro, tiene multa');
+      INSERT INTO multa
+      VALUES('MU4', :old.prestamo_id, SYSDATE, (SYSDATE - :old.fechaVencimiento)*10, SYSDATE - :old.fechaVencimiento);
     END IF;
   END tgDevolEliminPrest;
   /

@@ -153,6 +153,6 @@ CREATE TABLE multa(
   prestamo_id CHAR(5) NOT NULL,
   fechaMulta DATE DEFAULT SYSDATE NOT NULL,
   monto NUMBER(10,2),
-  diasRetraso CHAR(6),
+  diasRetraso NUMBER(10),
   CONSTRAINT Pkmulta PRIMARY KEY (multa_id, prestamo_id)
   );
