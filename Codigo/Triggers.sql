@@ -74,6 +74,20 @@ END T_prestamo_ejemplar;
 /
 
 -----------3.- CHAVIRA        El resello de un material se realiza únicamente en la fecha de vencimiento del préstamo en función del tipo de lector. -- Chavira
+CREATE OR REPLACE TRIGGER tgRevisarResello
+BEFORE UPDATE ON prestamo
+FOR EACH ROW
+BEGIN
+  IF TRUNC(:OLD.fechaResello-SYSDATE)=0 THEN
+    DBMS_OUTPUT.PUT_LINE('La fecha de resello coincide con la fecha actual.');
+  ELSIF :OLD.fechaResello<SYSDATE THEN
+    RAISE_APPLICATION_ERROR(-20097,'Este libro ya pasó su fecha de resello. Debe expedirse una multa.');
+  ELSE
+    RAISE_APPLICATION_ERROR(-20098, 'Este libro sólo se puede resellar el día de su fecha de resello.');
+  END IF;
+END tgRevisarResello;
+/
+
 -----------4.- JOYA           Al realizarse una devolución en tiempo, se eliminará el préstamo.
   CREATE OR REPLACE TRIGGER tgDevolEliminPrest
   BEFORE DELETE
