@@ -2,16 +2,15 @@ SET SERVEROUTPUT ON
 
 --------------------------------------------1.-LIBRO. (Dar de alta el MATERIAL). -- Lázaro
 /*AltaLibro*/
-set serveroutput on
 create or replace procedure AltaLibro(
   --parametros para la tabla material
-  vMaterial_id out char,
   vUbicacion in varchar2,
   vColocacion in varchar2,
   vTitulo in varchar2,
+  vTipo in char,
   --parametro para agregar el autor en la tabla escribe
   --tomamos en cuenta que el autor existe
-  vAutor_id in out char,
+  vAutor_id in char,
   --parametros para agregar a la tabla libro
   vNoAdquisicion in char,
   vISBN in char,
@@ -19,9 +18,15 @@ create or replace procedure AltaLibro(
   vEdicion in varchar2
 )
 is
+  vMaterial_id char(5);
   vCantidadDeAutores number;
   vCantidadDeLibros number;
+  vCantidadDeAdquisiciones number;
 begin
+  if vTipo != 'L' then
+    raise_application_error(-20049,'ERROR El tipo de material no es libro, ocupa
+      el otro procedimiento para agregar tesis');
+  end if;
   --se cuenta cuantos autores con ese Id existen
   select count(*)
   into vCantidadDeAutores
@@ -34,17 +39,28 @@ begin
     select count(*)
     into vCantidadDeLibros
     from material;
+
+    if vNoAdquisicion is null then
+      select count(*)+1
+      into vCantidadDeAdquisiciones
+      from libro;
+    else
+      vCantidadDeAdquisiciones:=vNoAdquisicion;
+    end if;
+
     --se asigna a la variable pertinente
     vMaterial_id:= 'M'||(vCantidadDeLibros+1);
     --se inserta en la tabla material
-    insert into material (material_id,ubicacion,colocacion,titulo)
-    values(vMaterial_id,vUbicacion,vColocacion,vTitulo);
+    insert into material (material_id,ubicacion,colocacion,titulo,tipoMaterial)
+    values(vMaterial_id,vUbicacion,vColocacion,vTitulo,vTipo);
     --se inserta en la tabla escribe
     insert into escribe (material_id,autor_id)
     values(vMaterial_id,vAutor_id);
     --se inserta en la tabla libro
     insert into libro (material_id,noAdquisicion,ISBN,tema,edicion)
-    values(vMaterial_id,vNoAdquisicion,vISBN,vTema,vEdicion);
+    values(vMaterial_id,vCantidadDeAdquisiciones,vISBN,vTema,vEdicion);
+
+    dbms_output.put_line('Se dio de alta exitosamente al libro '|| vMaterial_id);
 
   else
     raise_application_error(-20050,'ERROR No existe un autor con ese Id,
@@ -106,10 +122,11 @@ end;
 /
 show errors
 
+
 /*ActualizaLibro*/
 create or replace procedure ActualizaLibro(
   --se indican tres parametros, el id del material libro a actualizar
-  --el campo que se actualiza en MAYUSCULAS y el valor del campo
+  --el campo que se actualiza y el valor del campo
   vMaterial_id in char,
   vCampo in varchar2,
   vValor in varchar2
@@ -147,10 +164,9 @@ begin
       where material_id = vMaterial_id;
 
     else
-      raise_application_error(-20054,'ERROR No existe ese campo, o no lo puede modificar');
+      raise_application_error(-20054,'ERROR No existe ese campo');
 
   end case;
-  COMMIT;
 end;
 /
 show errors;
@@ -366,7 +382,6 @@ END ActualizaEjemplar;
 --------------------------------------------5.-LECTOR. --Lázaro
 /*AltaLector*/
 create or replace procedure AltaLector(
-  vLector_id out char,
   vTelefono in varchar2,
   vNombre in varchar2,
   vApPaternoLector in varchar2,
@@ -379,23 +394,28 @@ create or replace procedure AltaLector(
   vTipoLector_id in char
 )
 is
-  vCantidadDeTipos number;
+  vLector_id char(10);
+  vCantidadDeTipos number(4,0);
+  vCantidadDeLectores number(4,0);
 begin
   select count(*)
   into vCantidadDeTipos
   from tipolector
   where tipolector_id = vTipoLector_id;
 
-  select 'L'||count(*)+1
-  into vLector_id
+  select count(*)+1
+  into vCantidadDeLectores
   from lector;
+
+  vLector_id:='L'||vCantidadDeLectores;
 
   if vCantidadDeTipos != 0 then
     insert into lector (lector_id,fechaAltaLector,telefonoLector,fechaVigenciaLector,
       nombreLector,apPaternoLector,apMaternoLector,AdeudoLector,estado,numero,calle,
       colonia,delegacion,tipolector_id)
-    values(vLector_id,sysdate,vTelefono,sysdate+365,vNombre,vApPaternoLector,
-      vApMaternoLector,0,vEstado,vNumero,vCalle,vColonia,vDelegacion,vTipoLector_id);
+    values(vLector_id,sysdate,vTelefono,sysdate+365,
+      vNombre,vApPaternoLector,vApMaternoLector,0,vEstado,vNumero,vCalle,
+      vColonia,vDelegacion,vTipoLector_id);
     dbms_output.put_line('Alta de Usuario '
       ||vLector_id
       ||' exitosa');
