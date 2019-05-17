@@ -3,15 +3,14 @@
 --@Descripción:     prueba para generacion el procedimiento AltaLibro
 
 declare
-  vMaterial_id char(2);
   vNoAdquisicion number;
 begin
   select count(*)+1
   into vNoAdquisicion
   from libro;
+
   dbms_output.put_line('No se esperan problemas o excepciones');
   AltaLibro(
-    vMaterial_id      => vMaterial_id,
     vUbicacion        => 'Primer Piso',
     vColocacion       => 'Arriba',
     vTitulo           => 'Hansel y Grettell',
@@ -22,8 +21,6 @@ begin
     vISBN             => 'ISBN5',
     vTema             => 'Novelas',
     vEdicion          => 'Quinta');
-  dbms_output.put_line('Se agrego exitosamente el libro con id '
-    ||vMaterial_id);
   end;
 /
 select * 
@@ -31,7 +28,6 @@ from material
 join libro using(material_id);
 
 declare
-  vMaterial_id char(2);
   vNoAdquisicion number;
 begin
   select count(*)+1
@@ -39,7 +35,6 @@ begin
   from libro;
   dbms_output.put_line('Se espera error por tipo de material');
   AltaLibro(
-    vMaterial_id      => vMaterial_id,
     vUbicacion        => 'Primer Piso',
     vColocacion       => 'Arriba',
     vTitulo           => 'Hansel y Grettell',
@@ -61,7 +56,6 @@ end;
 /
 
 declare
-  vMaterial_id char(2);
   vNoAdquisicion number;
 begin
   select count(*)+1
@@ -69,7 +63,6 @@ begin
   from libro;
   dbms_output.put_line('Se espera error por Id de autor invalida');
   AltaLibro(
-    vMaterial_id      => vMaterial_id,
     vUbicacion        => 'Primer Piso',
     vColocacion       => 'Arriba',
     vTitulo           => 'Hansel y Grettell',

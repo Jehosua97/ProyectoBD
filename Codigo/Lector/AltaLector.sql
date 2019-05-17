@@ -3,7 +3,6 @@
 --@Descripción:     Actualizacion procedimiento AltaLector
 
 create or replace procedure AltaLector(
-  vLector_id out char,
   vTelefono in varchar2,
   vNombre in varchar2,
   vApPaternoLector in varchar2,
@@ -16,6 +15,7 @@ create or replace procedure AltaLector(
   vTipoLector_id in char
 )
 is
+  vLector_id char(10);
   vCantidadDeTipos number(4,0);
   vCantidadDeLectores number(4,0);
 begin

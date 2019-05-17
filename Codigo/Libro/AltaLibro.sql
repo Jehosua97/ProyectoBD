@@ -4,7 +4,6 @@
 set serveroutput on
 create or replace procedure AltaLibro(
   --parametros para la tabla material
-  vMaterial_id out char,
   vUbicacion in varchar2,
   vColocacion in varchar2,
   vTitulo in varchar2,
@@ -19,6 +18,7 @@ create or replace procedure AltaLibro(
   vEdicion in varchar2
 )
 is
+  vMaterial_id char(5);
   vCantidadDeAutores number;
   vCantidadDeLibros number;
   vCantidadDeAdquisiciones number;
@@ -59,6 +59,8 @@ begin
     --se inserta en la tabla libro
     insert into libro (material_id,noAdquisicion,ISBN,tema,edicion)
     values(vMaterial_id,vCantidadDeAdquisiciones,vISBN,vTema,vEdicion);
+
+    dbms_output.put_line('Se dio de alta exitosamente al libro '|| vMaterial_id);
 
   else
     raise_application_error(-20050,'ERROR No existe un autor con ese Id,
