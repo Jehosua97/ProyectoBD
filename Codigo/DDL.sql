@@ -149,13 +149,24 @@ CREATE TABLE prestamo(
   REFERENCES ejemplar ON DELETE SET NULL
   );
 
+CREATE TABLE prestamo_aux(
+  prestamo_id CHAR(5) NOT NULL,
+  resello NUMBER NOT NULL,
+  fechaResello DATE NULL,
+  fechaPrestamo DATE DEFAULT SYSDATE NOT NULL,
+  fechaVencimiento DATE NOT NULL,
+  lector_id CHAR(10) NOT NULL,
+  noEjemplar CHAR(10) NOT NULL,
+  material_id CHAR(5) NOT NULL
+  );
+
 CREATE TABLE multa(
   multa_id CHAR(10) NOT NULL,
-  lector_id CHAR(5) NOT NULL,
+  lector_id CHAR(10) NOT NULL,
   fechaMulta DATE DEFAULT SYSDATE NOT NULL,
   monto NUMBER(10,2),
-  diasRetraso number(6,0),
-  CONSTRAINT Pkmulta PRIMARY KEY (multa_id, prestamo_id),
-  CONSTRAITN FkLectorId FOREIGN KEY (lector_id)
-  REFERENCES lector IN DELETE SET NULL
+  diasRetraso CHAR(6),
+  CONSTRAINT Pkmulta PRIMARY KEY (multa_id),
+  CONSTRAINT FkLectorId FOREIGN KEY (lector_id)
+  REFERENCES lector(lector_id) ON DELETE set null
   );

@@ -24,9 +24,7 @@ JOIN escribe e ON (e.autor_id = a.autor_id)
 JOIN material m ON (e.material_id = m.material_id);
 
 --------------------4.- LAZARO      Vista de estatus del MATERIAL.
-create or replace view EstatusMaterial(
-  titulo,ejemplar,estatus
-) as
+create or replace view EstatusMaterial as
 select titulo,noEjemplar,descripcione
 from material
 join ejemplar using(material_id)
