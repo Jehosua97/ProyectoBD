@@ -13,6 +13,7 @@ SET SERVEROUTPUT ON
 /*Para iniciar desde cero teclear desde scott drop user proyecto cascade;*/
 
 --Desde usuario "proyecto"
+--Actualizar la tabla Multa en el modelo relacional*****************************************************
 CREATE TABLE autor(
   autor_id CHAR(10) NOT NULL,
   nombreAutor VARCHAR2(20) NOT NULL,
@@ -51,7 +52,7 @@ CREATE TABLE libro(
   CONSTRAINT PkLibro PRIMARY KEY (material_id),
   CONSTRAINT FkLibro FOREIGN KEY (material_id)
   REFERENCES material ON DELETE SET NULL,
-  CONSTRAINT AkLibro1 UNIQUE (noAdquisicion),
+  CONSTRAINT AkLibro1 UNIQUE(noAdquisicion),
   CONSTRAINT AkLibro2 UNIQUE (ISBN)
   );
 
@@ -148,11 +149,30 @@ CREATE TABLE prestamo(
   REFERENCES ejemplar ON DELETE SET NULL
   );
 
+CREATE TABLE prestamo_aux(
+  prestamo_id CHAR(5) NOT NULL,
+  resello NUMBER NOT NULL,
+  fechaResello DATE NULL,
+  fechaPrestamo DATE DEFAULT SYSDATE NOT NULL,
+  fechaVencimiento DATE NOT NULL,
+  lector_id CHAR(10) NOT NULL,
+  noEjemplar CHAR(10) NOT NULL,
+  material_id CHAR(5) NOT NULL
+  );
+
 CREATE TABLE multa(
   multa_id CHAR(10) NOT NULL,
-  prestamo_id CHAR(5) NOT NULL,
+  lector_id CHAR(10) NOT NULL,
   fechaMulta DATE DEFAULT SYSDATE NOT NULL,
   monto NUMBER(10,2),
+<<<<<<< HEAD
   diasRetraso NUMBER(10),
   CONSTRAINT Pkmulta PRIMARY KEY (multa_id, prestamo_id)
   );
+=======
+  diasRetraso CHAR(6),
+  CONSTRAINT Pkmulta PRIMARY KEY (multa_id),
+  CONSTRAINT FkLectorId FOREIGN KEY (lector_id)
+  REFERENCES lector(lector_id) ON DELETE set null
+  );
+>>>>>>> 111fed78276ca036e097b6d95cfb82faed58fe1a

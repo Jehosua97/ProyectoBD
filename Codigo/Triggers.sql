@@ -74,6 +74,7 @@ END T_prestamo_ejemplar;
 /
 
 -----------3.- CHAVIRA        El resello de un material se realiza únicamente en la fecha de vencimiento del préstamo en función del tipo de lector. -- Chavira
+<<<<<<< HEAD
 -----------4.- JOYA           Al realizarse una devolución en tiempo, se eliminará el préstamo y/o se generará una multa. 
   CREATE OR REPLACE PACKAGE pkprestamo
     AS
@@ -87,6 +88,23 @@ END T_prestamo_ejemplar;
       MATERIAL_ID CHAR(5)
   END;
 
+=======
+CREATE OR REPLACE TRIGGER tgRevisarResello
+BEFORE UPDATE ON prestamo
+FOR EACH ROW
+BEGIN
+  IF TRUNC(:OLD.fechaResello-SYSDATE)=0 THEN
+    DBMS_OUTPUT.PUT_LINE('La fecha de resello coincide con la fecha actual.');
+  ELSIF :OLD.fechaResello<SYSDATE THEN
+    RAISE_APPLICATION_ERROR(-20097,'Este libro ya pasó su fecha de resello. Debe expedirse una multa.');
+  ELSE
+    RAISE_APPLICATION_ERROR(-20098, 'Este libro sólo se puede resellar el día de su fecha de resello.');
+  END IF;
+END tgRevisarResello;
+/
+
+-----------4.- JOYA           Al realizarse una devolución en tiempo, se eliminará el préstamo.
+>>>>>>> 111fed78276ca036e097b6d95cfb82faed58fe1a
   CREATE OR REPLACE TRIGGER tgDevolEliminPrest
   BEFORE DELETE
   ON prestamo
