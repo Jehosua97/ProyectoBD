@@ -766,3 +766,4 @@ BEGIN
   DBMS_OUTPUT.PUT_LINE('Se actualizó el grado academico con id:  ' || vgradoAcademico_id);
 END ActualizaGradoAcademico;
 /
+
