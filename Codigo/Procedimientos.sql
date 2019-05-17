@@ -49,7 +49,7 @@ begin
     end if;
 
     --se asigna a la variable pertinente
-    vMaterial_id:= 'M'||(vCantidadDeLibros+1);
+    vMaterial_id:= 'M' || SeqAltaLibro.NEXTVAL;
     --se inserta en la tabla material
     insert into material (material_id,ubicacion,colocacion,titulo,tipoMaterial)
     values(vMaterial_id,vUbicacion,vColocacion,vTitulo,vTipo);
@@ -339,7 +339,7 @@ WHERE material_id = vmaterial_id;
 IF (vmaterial > 0) THEN
   SELECT count(*) INTO vnoEjemplar
   FROM ejemplar WHERE MATERIAL_ID = vmaterial_id;
-  vCharejemplar := 'EJ' || (vnoEjemplar + 1);
+  vCharejemplar := 'EJ' || SeqAltaMultas.NEXTVAL;
   INSERT INTO ejemplar VALUES (vCharejemplar, vmaterial_id, 'ES1');
   COMMIT;
 ELSE
