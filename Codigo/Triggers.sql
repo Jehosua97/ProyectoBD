@@ -4,13 +4,17 @@ create or replace trigger tgMultaLectorEnLector
   on lector
   for each row
 declare
+  PRAGMA AUTONOMOUS_TRANSACTION;
   vCantidadDeMultas number(4,0);
+  cursor cur_multa is
+    select count(*) as multas
+    from multa
+    where lector_id=:old.lector_id;
+    
 begin
-  select count(*)
-  into vCantidadDeMultas
-  from multa
-  join prestamo using(prestamo_id)
-  where lector_id=:old.lector_id;
+  for r in cur_multa loop
+    vCantidadDeMultas:=r.multas;
+  end loop;
 
   if vCantidadDeMultas != 0 then
     raise_application_error(-20056,'ERROR No se puede dar de baja al
@@ -32,7 +36,6 @@ begin
   select count(*)
   into vCantidadDeMultas
   from multa
-  join prestamo using(prestamo_id)
   where lector_id=:new.lector_id;
 
   if vCantidadDeMultas != 0 then
@@ -74,21 +77,6 @@ END T_prestamo_ejemplar;
 /
 
 -----------3.- CHAVIRA        El resello de un material se realiza únicamente en la fecha de vencimiento del préstamo en función del tipo de lector. -- Chavira
-<<<<<<< HEAD
------------4.- JOYA           Al realizarse una devolución en tiempo, se eliminará el préstamo y/o se generará una multa. 
-  CREATE OR REPLACE PACKAGE pkprestamo
-    AS
-      PRESTAMO_ID CHAR(5),
-      RESELLO NUMBER,
-      FECHARESELLO DATE,
-      FECHAPRESTAMO DATE,
-      FECHAVENCIMIENTO DATE,
-      LECTOR_ID CHAR(10),
-      NOEJEMPLAR CHAR(10),
-      MATERIAL_ID CHAR(5)
-  END;
-
-=======
 CREATE OR REPLACE TRIGGER tgRevisarResello
 BEFORE UPDATE ON prestamo
 FOR EACH ROW
@@ -102,9 +90,21 @@ BEGIN
   END IF;
 END tgRevisarResello;
 /
+-----------4.- JOYA           Al realizarse una devolución en tiempo, se eliminará el préstamo y/o se generará una multa. 
+  CREATE OR REPLACE PACKAGE pkprestamo
+    AS
+      PRESTAMO_ID CHAR(5),
+      RESELLO NUMBER,
+      FECHARESELLO DATE,
+      FECHAPRESTAMO DATE,
+      FECHAVENCIMIENTO DATE,
+      LECTOR_ID CHAR(10),
+      NOEJEMPLAR CHAR(10),
+      MATERIAL_ID CHAR(5)
+  END;
+
 
 -----------4.- JOYA           Al realizarse una devolución en tiempo, se eliminará el préstamo.
->>>>>>> 111fed78276ca036e097b6d95cfb82faed58fe1a
   CREATE OR REPLACE TRIGGER tgDevolEliminPrest
   BEFORE DELETE
   ON prestamo
@@ -127,33 +127,56 @@ END tgRevisarResello;
 
 -----------5.- LAZARO         Al resellar el préstamo de un material, la fecha del préstamo cambiará a la fecha en la que se resella, la fecha de vencimiento se volverá a calcular dependiendo del tipo de lector y se actualizará el número de refrendo. -- Lázaro
 create or replace trigger tgValidaReselloPrestamo
-  before update
+  before update of resello
   on prestamo
   for each row
+
+declare
+begin
+
+  insert into prestamo_aux values(:old.prestamo_id,:old.resello,:old.fecharesello,
+    :old.fechaPrestamo,:old.fechavencimiento,:old.lector_id,:old.noejemplar,
+    :old.material_id);
+
+end;
+/
+show errors
+
+create or replace trigger tgValidaReselloPrestamoDos
+  after update of resello
+  on prestamo
+
 declare
   vLimiteRefrendos number(1,0);
   vDiasPrestamo number(1,0);
   vCantidadResellos number(1,0);
+  cursor cur_prestamos is
+    select prestamo_id,lector_id,refrendos,diasprestamo,resello,fechavencimiento
+    from prestamo_aux
+    join lector using(lector_id)
+    join tipolector using(tipolector_id);
 
 begin
-  select refrendos,diasPrestamo,resello
-  into vLimiteRefrendos,vDiasPrestamo,vCantidadResellos
-  from lector
-  join tipolector using(tipolector_id)
-  join prestamo using(lector_id)
-  where lector_id=:new.lector_id;
 
-  if vCantidadResellos<vLimiteRefrendos then
-    update prestamo set
-      fechaResello = sysdate,
-      fechaPrestamo = sysdate,
-      fechaVencimiento = :old.fechaVencimiento + vDiasPrestamo
-    where prestamo_id=:new.prestamo_id;
-  else
-    raise_application_error(-20057,'ERROR El lector ya no puede hacer mas
-      resellos debido a su tipo de lector');
-  end if;
+  for r in cur_prestamos loop
+    vLimiteRefrendos:=r.refrendos;
+    vDiasPrestamo:=r.diasprestamo;
+    vCantidadResellos:=r.resello;
 
+    dbms_output.put_line('Cantidad de resellos permitidos: '||vLimiteRefrendos);
+    dbms_output.put_line('Cantidad de resellos hechos: '||vCantidadResellos);
+    if vCantidadResellos<vLimiteRefrendos then
+      update prestamo set
+        fechaResello = sysdate,
+        fechaPrestamo = sysdate,
+        fechaVencimiento = r.fechaVencimiento + vDiasPrestamo
+      where prestamo_id=r.prestamo_id;
+    else
+      raise_application_error(-20057,'ERROR El lector ya no puede hacer mas
+        resellos debido a su tipo de lector');
+    end if;
+  end loop;
+  delete from prestamo_aux;
 end;
 /
 show errors

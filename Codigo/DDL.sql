@@ -165,14 +165,8 @@ CREATE TABLE multa(
   lector_id CHAR(10) NOT NULL,
   fechaMulta DATE DEFAULT SYSDATE NOT NULL,
   monto NUMBER(10,2),
-<<<<<<< HEAD
-  diasRetraso NUMBER(10),
-  CONSTRAINT Pkmulta PRIMARY KEY (multa_id, prestamo_id)
-  );
-=======
   diasRetraso CHAR(6),
   CONSTRAINT Pkmulta PRIMARY KEY (multa_id),
   CONSTRAINT FkLectorId FOREIGN KEY (lector_id)
   REFERENCES lector(lector_id) ON DELETE set null
   );
->>>>>>> 111fed78276ca036e097b6d95cfb82faed58fe1a
