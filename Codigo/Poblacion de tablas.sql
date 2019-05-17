@@ -31,7 +31,8 @@ INSERT INTO tesis VALUES ('M6', 'T3', 'Electricos', '2007', 'D3');
 
 INSERT INTO estatus VALUES ('ES1', 'Disponible');
 INSERT INTO estatus VALUES ('ES2', 'Prestado');
-INSERT INTO estatus VALUES ('ES3', 'Perdido');
+INSERT INTO estatus VALUES ('ES3', 'No sale de la biblioteca');
+INSERT INTO estatus VALUES ('ES4', 'En mantenimiento');
 
 INSERT INTO ejemplar VALUES ('EJ1', 'M1', 'ES1');
 INSERT INTO ejemplar VALUES ('EJ2', 'M2', 'ES2');

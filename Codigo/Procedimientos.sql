@@ -330,25 +330,34 @@ CREATE OR REPLACE PROCEDURE AltaEjemplar(
 )
 AS
   vnoEjemplar NUMBER(2);
+  vCharejemplar CHAR(5);
+  vmaterial NUMBER;
 BEGIN
-SELECT count(*) INTO vnoEjemplar
-FROM ejemplar WHERE MATERIAL_ID = vmaterial_id;
-INSERT INTO ejemplar VALUES ('EJ', vmaterial_id, 'ES1');
---DBMS_OUTPUT.PUT_LINE('Se insertó el ejemplar con id: '|| vnoEjemplar);
-COMMIT;
-DBMS_OUTPUT.PUT_LINE('EJ'||vnoEjemplar+1);
+SELECT count(*) INTO vmaterial
+FROM material
+WHERE material_id = vmaterial_id;
+IF (vmaterial > 0) THEN
+  SELECT count(*) INTO vnoEjemplar
+  FROM ejemplar WHERE MATERIAL_ID = vmaterial_id;
+  vCharejemplar := 'EJ' || (vnoEjemplar + 1);
+  INSERT INTO ejemplar VALUES (vCharejemplar, vmaterial_id, 'ES1');
+  COMMIT;
+ELSE
+  DBMS_OUTPUT.PUT_LINE('No existe ningun material registrado aun');
+END IF;
 END AltaEjemplar;
 /
 
 /*BajaEjemplar*/
 CREATE OR REPLACE PROCEDURE BajaEjemplar(
-  vnoEjemplar IN ejemplar.noEjemplar%TYPE
+  vnoEjemplar IN ejemplar.noEjemplar%TYPE,
+  vmaterial_id IN ejemplar.material_id%TYPE
 )
 IS
   vestatus_id ejemplar.estatus_id%TYPE;
 BEGIN
 SELECT estatus_id INTO vestatus_id
-FROM ejemplar WHERE (vnoEjemplar = noEjemplar);
+FROM ejemplar WHERE (vnoEjemplar = noEjemplar AND vmaterial_id = material_id);
 IF (vestatus_id <> 'ES2') THEN
   DELETE FROM ejemplar WHERE (vnoEjemplar = noEjemplar);
   DBMS_OUTPUT.PUT_LINE('Se eliminó el ejemplar con id: ' || vnoEjemplar);
@@ -362,18 +371,34 @@ END BajaEjemplar;
 /*ActualizaEjemplar*/
 CREATE OR REPLACE PROCEDURE ActualizaEjemplar(
   vnoEjemplar IN ejemplar.noEjemplar%TYPE,
+  vMaterial_id IN ejemplar.material_id%TYPE,
   vCampo in varchar2,
   vValor in varchar2
 )
 AS
+  vEstatusActual CHAR(10);
 BEGIN
   CASE
     when upper(vCampo) = 'NOEJEMPLAR' then
       UPDATE ejemplar SET  noEjemplar = vValor
-      WHERE vnoEjemplar = noEjemplar;
+      WHERE vnoEjemplar = noEjemplar AND vMaterial_id = material_id;
     when upper(vCampo) = 'MATERIAL_ID' then
       UPDATE ejemplar SET  material_id = vValor
-      WHERE vnoEjemplar = noEjemplar;
+      WHERE vnoEjemplar = noEjemplar AND vMaterial_id = material_id;
+    when upper(vCampo) = 'ESTATUS_ID' then
+      SELECT estatus_id INTO vEstatusActual
+      FROM ejemplar
+      WHERE vnoEjemplar = noEjemplar AND vMaterial_id = material_id;
+      IF (vEstatusActual <> 'ES2') THEN
+        IF (vValor <> 'ES2') THEN
+          UPDATE ejemplar SET  estatus_id = vValor
+          WHERE vnoEjemplar = noEjemplar AND vMaterial_id = material_id;
+        ELSE
+          dbms_output.put_line('No puede modificar este campo a valor "Prestado"');
+        END IF;
+      ELSE
+        dbms_output.put_line('No puede modificar este campo a valor hasta que se elimine el prestamo');
+      END IF;
   ELSE
     raise_application_error(-20051,'ERROR No existe ese campo, o usted no lo puede modificar');
   END CASE;
@@ -539,6 +564,7 @@ end;
 /
 show errors
 --------------------------------------------6.-PRESTAMO. -- Oscar
+--NOTA: VERIFICAR QUE EL LECTOR SE ENCUNTRE CON FECHA VIGENCIA MENOR A SYSDATE
 /*AltaPrestamo*/
 set serveroutput on
 CREATE OR REPLACE PROCEDURE AltaPrestamo(
@@ -633,14 +659,29 @@ end;
 --------------------------------------------7.-MULTA. – Chavira
 /*AltaMulta*/
 CREATE OR REPLACE PROCEDURE AltaMulta(
-  vMulta_id multa.multa_id%TYPE,
-  vPrestamo_id multa.prestamo_id%TYPE
+  vPrestamo prestamo.prestamo_id%TYPE
 )
 AS
+  vnumMulta NUMBER;
+  vmulta_id CHAR(10);
+  vLector_id CHAR(10);
+  vfechaVencimiento DATE;
+  vdias_retraso NUMBER(15);
 BEGIN
-  INSERT INTO multa
-  VALUES(vMulta_id, vPrestamo_id, SYSDATE, 0, 0);
-  DBMS_OUTPUT.PUT_LINE('Se insertó una nueva multa con id: ' || vMulta_id);
+  SELECT fechaVencimiento, lector_id INTO vfechaVencimiento, vLector_id
+  FROM prestamo
+  WHERE vPrestamo = prestamo_id;
+  IF (vfechaVencimiento < SYSDATE) THEN
+    SELECT count(*) INTO vnumMulta
+    FROM multa;
+    vmulta_id := 'MU' || SeqAltamulta.NEXTVAL;
+    vdias_retraso := SYSDATE-vfechaVencimiento;
+    INSERT INTO multa
+    VALUES(vMulta_id, vLector_id, SYSDATE, vdias_retraso * 10, vdias_retraso);
+    DBMS_OUTPUT.PUT_LINE('Se insertó una nueva multa con id: ' || vMulta_id);
+  ELSE
+    DBMS_OUTPUT.PUT_LINE('Entregado en tiempo, no se genera multa');
+  END IF;
   COMMIT;
 END AltaMulta;
 /

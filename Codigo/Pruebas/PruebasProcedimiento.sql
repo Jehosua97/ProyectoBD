@@ -34,9 +34,43 @@ EXEC ActualizaDirTesis('D2', 'Prepa', 'Alberto', 'Gonzalo', 'Venegas');
 /*******Procedimiento Alta Ejemplar (Joya)*********/
 --NOTAS: El estatus siempre se iniciará en ES1 (Disponible) por default
        --El numeroEjemplar se asigna automaticamente dependiendo el material
---EXEC AltaEjemplar(NOEJEMPLAR, MATERIAL_ID);
+--EXEC AltaEjemplar(MATERIAL_ID);
 EXEC AltaEjemplar('M1');
 
-
 /*******Procedimiento Borra Ejemplar (Joya)*********/
+--EXEC BajaEjemplar(NoEJEMPLAR, MATERIAL_ID);
+EXEC BajaEjemplar('EJ2', 'M2');
+
 /*******Procedimiento Actualiza Ejemplar (Joya)*********/
+--NOTAS: --*No se podrá modificar el estatus si se encuntra en prestamo el ejemplar
+--EXEC ActualizaEjemplar(NOEJEMPLAR, MATERIAL_ID, CAMPO.A.MODIFICAR, VALOR);
+EXEC ActualizaEjemplar('EJ1', 'M6', 'ESTATUS_ID' ,'ES3');
+
+
+/*******Procedimiento Alta Lector (Lazaro)*********/
+--EXEC AltaLector('TELEFONO','NOMBRE','APPATERNO','APMATERNO','CIUDAD','NUMERO'','CALLE','Colonia','Delegacion','TIPOLECTOR');
+EXEC AltaLector('5520181818','Abraham','Lazaro','Martinez','CDMX','X','Calle X','Colonia X','Delegacion X','TL1');
+
+/*******Procedimiento Borra Lector (Lazaro)*********/
+--NOTAS: Si no existe el lector aun asi hace el procedimineto
+--EXEC BorraLector(LECTOR_ID);
+EXEC BorraLector('L1');
+
+/*******Procedimiento Actualiza Lector (Lazaro)*********/
+--EXEC ActualizaLector(LECTOR_ID, CAMPO, VALOR);
+EXEC ActualizaLector('L1', 'FECHAALTALECTOR', '01/01/13');
+
+/*******Procedimiento Alta Prestamo (Oscar)*********/
+/*******Procedimiento Borra Prestamo (Oscar)*********/
+/*******Procedimiento Actualiza Prestamo (Oscar)*********/
+
+
+/*******Procedimiento Alta Multa (Chavira)*********/
+--EXEC AltaMulta(PRESTAMO_ID);
+EXEC AltaMulta('P1')
+
+/*******Procedimiento Baja Multa (Chavira)*********/
+--EXEC BajaMulta(MULTA_ID);
+EXEC BajaMulta('MU1');
+
+/*******Procedimiento Actualiza Multa (Chavira)*********/

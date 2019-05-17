@@ -79,8 +79,8 @@ END tgPrestamoEjemplar;
 /
 
 --Pruebas para ejecutar
-INSERT INTO prestamo VALUES ('P10', 0, '08/10/16', SYSDATE, '10/10/16', 'L1', 'EJ1', 'M1');
-SELECT * FROM ejemplar e JOIN estatus s ON e.estatus_id=s.estatus_id;
+--INSERT INTO prestamo VALUES ('P10', 0, '08/10/16', SYSDATE, '10/10/16', 'L1', 'EJ1', 'M1');
+--SELECT * FROM ejemplar e JOIN estatus s ON e.estatus_id=s.estatus_id;
 
 -----------3.- CHAVIRA        El resello de un material se realiza únicamente en la fecha de vencimiento del préstamo en función del tipo de lector. -- Chavira
 CREATE OR REPLACE TRIGGER tgRevisarResello
