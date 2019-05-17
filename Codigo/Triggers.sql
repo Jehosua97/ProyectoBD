@@ -52,29 +52,35 @@ show errors;
 
 -----------2.- OSCAR          Al realizarse el préstamo de un ejemplar, se deberá de modificar su estatus automáticamente. -- Oscar
 
-CREATE OR REPLACE TRIGGER T_prestamo_ejemplar
+CREATE OR REPLACE TRIGGER tgPrestamoEjemplar
 BEFORE INSERT
 ON prestamo
 FOR EACH ROW
 DECLARE
-  v_estatus_id VARCHAR2 := 'ES2';
-  v_noEjemplar CHAR;
-  v_material_id CHAR;
+  vEstatus_id ejemplar.estatus_id%TYPE;
 BEGIN
-
-  SELECT noEjemplar, material_id INTO v_noEjemplar, v_material_id
+  SELECT estatus_id INTO vEstatus_id
   FROM ejemplar
-  WHERE :NEW.material_id = material_id
-  AND :NEW.noEjemplar = noEjemplar;
+  WHERE noEjemplar = :NEW.noEjemplar AND material_id = :NEW.material_id;
 
-  UPDATE estatus_id SET estatus_id = v_estatus_id
-  WHERE :NEW.material_id = v_material_id
-  AND :NEW.noEjemplar = v_noEjemplar;
+  IF vEstatus_id = 'ES1' THEN
+    UPDATE ejemplar SET estatus_id = 'ES2'
+    WHERE material_id = :NEW.material_id
+    AND noEjemplar = :NEW.noEjemplar;
+    DBMS_OUTPUT.PUT_LINE('Se cambio el estatus a prestado del ejemplar: ' ||  :NEW.noEjemplar);
 
-  DBMS_OUTPUT.PUT_LINE('Se cambio el estatus a prestado del ejemplar: ' ||  :NEW.noEjemplar);
+  ELSIF vEstatus_id = 'ES2' THEN
+    RAISE_APPLICATION_ERROR(-20096, 'El ejemplar '|| :NEW.noEjemplar || ' del material ' || :NEW.material_id || 'ya se encuentra prestado.');
 
-END T_prestamo_ejemplar;
+  ELSE
+    RAISE_APPLICATION_ERROR(-20095, 'El ejemplar '|| :NEW.noEjemplar || ' del material ' || :NEW.material_id || 'está perdido.');
+  END IF;
+END tgPrestamoEjemplar;
 /
+
+--Pruebas para ejecutar
+INSERT INTO prestamo VALUES ('P10', 0, '08/10/16', SYSDATE, '10/10/16', 'L1', 'EJ1', 'M1');
+SELECT * FROM ejemplar e JOIN estatus s ON e.estatus_id=s.estatus_id;
 
 -----------3.- CHAVIRA        El resello de un material se realiza únicamente en la fecha de vencimiento del préstamo en función del tipo de lector. -- Chavira
 CREATE OR REPLACE TRIGGER tgRevisarResello
