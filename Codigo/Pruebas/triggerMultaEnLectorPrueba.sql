@@ -24,6 +24,7 @@ begin
 end;
 /
 
+
 declare
   vLector_id char(10);
   vCantidadMultas number(4,0);
