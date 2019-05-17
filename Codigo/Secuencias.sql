@@ -21,3 +21,11 @@ create sequence SeqAltaLibro
   maxvalue 1000
   minvalue 0
   nocycle;
+
+--Procedmineto AltaGradoAcademico
+create sequence SeqAltaGradoAcademico
+  start with 0
+  increment by 1
+  maxvalue 1000
+  minvalue 0
+  nocycle;

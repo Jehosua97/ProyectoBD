@@ -74,3 +74,10 @@ EXEC AltaMulta('P1')
 EXEC BajaMulta('MU1');
 
 /*******Procedimiento Actualiza Multa (Chavira)*********/
+
+
+/*******Procedimiento Alta GradoAcademico (Joya)*********/
+EXEC AltaGradoAcademico('Kinder');
+/*******Procedimiento Baja GradoAcademico (Joya)*********/
+
+/*******Procedimiento Actualiza GradoAcademico (Joya)*********/

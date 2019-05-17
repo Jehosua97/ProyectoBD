@@ -725,14 +725,15 @@ END ActualizaDiasMulta;
 --------------------------------------------8.-GRADO ACADEMICO. –- Joya
 /*AltaGradoAcademico*/
 CREATE OR REPLACE PROCEDURE AltaGradoAcademico(
-  vgradoAcademico_id IN gradoAcademico.gradoAcademico_id%TYPE,
   vdescripcionGA IN gradoAcademico.descripcionGA%TYPE
 )
 AS
+  vgrado_id CHAR(10);
 BEGIN
+  vgrado_id := 'GA' || SeqAltaGradoAcademico.NEXTVAL;
   INSERT INTO gradoAcademico
-  VALUES (vgradoAcademico_id, vdescripcionGA);
-  DBMS_OUTPUT.PUT_LINE('Se inserto un nuevo grado academico con id:  ' || vgradoAcademico_id);
+  VALUES (vgrado_id, vdescripcionGA);
+  DBMS_OUTPUT.PUT_LINE('Se inserto un nuevo grado academico con id:  ' || vgrado_id);
   COMMIT;
 END AltaGradoAcademico;
 /
