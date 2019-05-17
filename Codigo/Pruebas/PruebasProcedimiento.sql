@@ -66,18 +66,26 @@ EXEC ActualizaLector('L1', 'FECHAALTALECTOR', '01/01/13');
 
 
 /*******Procedimiento Alta Multa (Chavira)*********/
---EXEC AltaMulta(PRESTAMO_ID);
-EXEC AltaMulta('P1')
+--EXEC AltaMulta(PRESTAMO_ID, LECTOR_ID, FECHAVENCIMIENTO);
+EXEC AltaMulta('P1', 'L2', '01/01/12');
 
 /*******Procedimiento Baja Multa (Chavira)*********/
 --EXEC BajaMulta(MULTA_ID);
 EXEC BajaMulta('MU1');
 
 /*******Procedimiento Actualiza Multa (Chavira)*********/
-
+--EXEC ActualizaMulta(MULTA_ID, FECHA_MULTA, DIASRETRASO);
+EXEC ActualizaMulta('MU1', SYSDATE, 29);
 
 /*******Procedimiento Alta GradoAcademico (Joya)*********/
+--EXEC AltaGradoAcademico(DESCRIPCIONGRADOACADEMICO);
 EXEC AltaGradoAcademico('Kinder');
+
 /*******Procedimiento Baja GradoAcademico (Joya)*********/
+--EXEC BajaGradoAcademico(GRADO_ID);
+EXEC BajaGradoAcademico('GA2');
 
 /*******Procedimiento Actualiza GradoAcademico (Joya)*********/
+--EXEC ActualizaGradoAcademico(GRADO_ID, DESCRIPCION);
+EXEC ActualizaGradoAcademico('GA2', 'UNIVERSIDAD');
+

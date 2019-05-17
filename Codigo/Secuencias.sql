@@ -6,8 +6,8 @@
   minvalue 0
   nocycle;
 
---Procedmineto AltaMultas
-create sequence SeqAltaMultas
+ --Procedmineto AltaEjemplar
+ create sequence SeqAltaEjemplar
   start with 0
   increment by 1
   maxvalue 1000

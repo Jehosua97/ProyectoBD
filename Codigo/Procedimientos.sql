@@ -339,7 +339,7 @@ WHERE material_id = vmaterial_id;
 IF (vmaterial > 0) THEN
   SELECT count(*) INTO vnoEjemplar
   FROM ejemplar WHERE MATERIAL_ID = vmaterial_id;
-  vCharejemplar := 'EJ' || SeqAltaMultas.NEXTVAL;
+  vCharejemplar := 'EJ' || SeqAltaEjemplar.NEXTVAL;
   INSERT INTO ejemplar VALUES (vCharejemplar, vmaterial_id, 'ES1');
   COMMIT;
 ELSE
@@ -386,19 +386,8 @@ BEGIN
       UPDATE ejemplar SET  material_id = vValor
       WHERE vnoEjemplar = noEjemplar AND vMaterial_id = material_id;
     when upper(vCampo) = 'ESTATUS_ID' then
-      SELECT estatus_id INTO vEstatusActual
-      FROM ejemplar
-      WHERE vnoEjemplar = noEjemplar AND vMaterial_id = material_id;
-      IF (vEstatusActual <> 'ES2') THEN
-        IF (vValor <> 'ES2') THEN
-          UPDATE ejemplar SET  estatus_id = vValor
-          WHERE vnoEjemplar = noEjemplar AND vMaterial_id = material_id;
-        ELSE
-          dbms_output.put_line('No puede modificar este campo a valor "Prestado"');
-        END IF;
-      ELSE
-        dbms_output.put_line('No puede modificar este campo a valor hasta que se elimine el prestamo');
-      END IF;
+      UPDATE ejemplar SET  estatus_id = vValor
+      WHERE vnoEjemplar = noEjemplar AND vMaterial_id = material_id;      
   ELSE
     raise_application_error(-20051,'ERROR No existe ese campo, o usted no lo puede modificar');
   END CASE;
@@ -659,21 +648,15 @@ end;
 --------------------------------------------7.-MULTA. – Chavira
 /*AltaMulta*/
 CREATE OR REPLACE PROCEDURE AltaMulta(
-  vPrestamo prestamo.prestamo_id%TYPE
+  vPrestamo prestamo.prestamo_id%TYPE,
+  vLector_id prestamo.lector_id%TYPE,
+  vfechaVencimiento prestamo.fechaVencimiento%TYPE
 )
 AS
-  vnumMulta NUMBER;
   vmulta_id CHAR(10);
-  vLector_id CHAR(10);
-  vfechaVencimiento DATE;
   vdias_retraso NUMBER(15);
 BEGIN
-  SELECT fechaVencimiento, lector_id INTO vfechaVencimiento, vLector_id
-  FROM prestamo
-  WHERE vPrestamo = prestamo_id;
   IF (vfechaVencimiento < SYSDATE) THEN
-    SELECT count(*) INTO vnumMulta
-    FROM multa;
     vmulta_id := 'MU' || SeqAltamulta.NEXTVAL;
     vdias_retraso := SYSDATE-vfechaVencimiento;
     INSERT INTO multa
@@ -698,27 +681,18 @@ BEGIN
 END BajaMulta;
 /
 
-/*ActualizaDiasMulta*/ -- REVISAR CONVERSION A TRIGGER...
-CREATE OR REPLACE PROCEDURE ActualizaDiasMulta
+/*ActualizaMulta*/
+CREATE OR REPLACE PROCEDURE ActualizaMulta(
+    vMulta_id multa.multa_id%TYPE,
+    vFechaMulta multa.fechaMulta%TYPE,
+    vdiasRetraso multa.diasretraso%TYPE
+)
 AS
-vMulta_id multa.multa_id%TYPE;
-vFechaMulta multa.fechaMulta%TYPE;
-CURSOR cursorMultas IS
-  SELECT multa_id, fechaMulta
-  FROM multa;
 BEGIN
-  OPEN cursorMultas;
-  LOOP
-    FETCH cursorMultas
-    INTO vMulta_id, vFechaMulta;
-    UPDATE multa SET
-      diasRetraso=TRUNC(SYSDATE-vFechaMulta),
-      monto=(TRUNC((SYSDATE-vFechaMulta))*10)
-    WHERE multa_id=vMulta_id;
-  EXIT WHEN cursorMultas%NOTFOUND;
-  END LOOP;
-  CLOSE cursorMultas;
-END ActualizaDiasMulta;
+  UPDATE multa
+  SET fechaMulta = vFechaMulta, monto = vdiasRetraso*10, diasretraso = vdiasRetraso
+  WHERE vMulta_id = multa_id;
+END ActualizaMulta;
 /
 
 
