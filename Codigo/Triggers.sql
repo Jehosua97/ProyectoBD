@@ -72,8 +72,11 @@ BEGIN
   ELSIF vEstatus_id = 'ES2' THEN
     RAISE_APPLICATION_ERROR(-20096, 'El ejemplar '|| :NEW.noEjemplar || ' del material ' || :NEW.material_id || 'ya se encuentra prestado.');
 
+  ELSIF vEstatus_id = 'ES3' THEN
+    RAISE_APPLICATION_ERROR(-20095, 'El ejemplar '|| :NEW.noEjemplar || ' del material ' || :NEW.material_id || 'no sale de la biblioteca.');
+  
   ELSE
-    RAISE_APPLICATION_ERROR(-20095, 'El ejemplar '|| :NEW.noEjemplar || ' del material ' || :NEW.material_id || 'está perdido.');
+    RAISE_APPLICATION_ERROR(-20094, 'El ejemplar '|| :NEW.noEjemplar || ' del material ' || :NEW.material_id || 'está en mantenimiento.');
   END IF;
 END tgPrestamoEjemplar;
 /
@@ -126,7 +129,7 @@ END tgRevisarResello;
       DBMS_OUTPUT.PUT_LINE('Se eliminó prestamo con id ' ||  :old.prestamo_id);
     ELSE
       INSERT INTO multa
-      VALUES('MU4', :old.prestamo_id, SYSDATE, (SYSDATE - :old.fechaVencimiento)*10, SYSDATE - :old.fechaVencimiento);
+      VALUES('M' || seqAltaMultas.NEXTVAL, :old.prestamo_id, SYSDATE, (SYSDATE - :old.fechaVencimiento)*10, SYSDATE - :old.fechaVencimiento);
     END IF;
   END tgDevolEliminPrest;
   /
