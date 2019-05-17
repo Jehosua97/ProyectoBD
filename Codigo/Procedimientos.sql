@@ -69,7 +69,6 @@ begin
 
 end;
 /
-show errors;
 
 /*BorraLibro*/
 create or replace procedure BorraLibro(
@@ -327,15 +326,17 @@ END ActualizaDirTesis;
 --------------------------------------------4.-EJEMPLAR.--Joya
 /*AltaEjemplar*/
 CREATE OR REPLACE PROCEDURE AltaEjemplar(
-  vnoEjemplar IN CHAR,
-  vmaterial_id IN CHAR,
-  vestatus_id IN VARCHAR2
+  vmaterial_id IN CHAR
 )
 AS
+  vnoEjemplar NUMBER(2);
 BEGIN
-INSERT INTO ejemplar VALUES (vnoEjemplar, vmaterial_id,vestatus_id);
+SELECT count(*) INTO vnoEjemplar
+FROM ejemplar WHERE MATERIAL_ID = vmaterial_id;
+INSERT INTO ejemplar VALUES ('EJ', vmaterial_id, 'ES1');
+--DBMS_OUTPUT.PUT_LINE('Se insertó el ejemplar con id: '|| vnoEjemplar);
 COMMIT;
-DBMS_OUTPUT.PUT_LINE('Se insertó el ejemplar con id: ' || vnoEjemplar);
+DBMS_OUTPUT.PUT_LINE('EJ'||vnoEjemplar+1);
 END AltaEjemplar;
 /
 
