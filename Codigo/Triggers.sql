@@ -121,6 +121,8 @@ CREATE OR REPLACE TRIGGER tgDevolEliminPrest
   END tgDevolEliminPrest;
   /
 
+
+/*
 -----------5.- LAZARO         Al resellar el préstamo de un material, la fecha del préstamo cambiará a la fecha en la que se resella, la fecha de vencimiento se volverá a calcular dependiendo del tipo de lector y se actualizará el número de refrendo. -- Lázaro
 create or replace trigger tgValidaReselloPrestamo
   before update of resello
@@ -177,6 +179,9 @@ end;
 /
 show errors
 
+
+--INTENTO 1
+
 CREATE TABLE prestamo2(
   prestamo_id CHAR(5) NOT NULL,
   resello NUMBER NOT NULL,
@@ -209,44 +214,83 @@ BEGIN
 END tgPackagePrestamo;
 /
 
-
 create or replace trigger tgValidaReselloPrestamo
   before update
   on prestamo
   FOR EACH ROW
 declare
   vtipoLector CHAR(4);
-  vresello NUMBER(20);
+  vresello NUMBER(2);
   vprestamo_id CHAR(5);
 begin
-SELECT tipolector_id INTO vtipoLector
-FROM lector
-WHERE lector_id = :new.lector_id;
-SELECT resello, prestamo_id INTO vresello, vprestamo_id
-FROM prestamo2 
-WHERE prestamo_id = :old.prestamo_id;
-  CASE
-    WHEN UPPER(vtipoLector) = 'TL1' THEN
+SELECT P.resello, P.prestamo_id, L.tipolector_id INTO vresello, vprestamo_id, vtipoLector
+FROM prestamo2 P JOIN lector L ON (P.LECTOR_ID = L.LECTOR_ID) 
+WHERE (P.prestamo_id = :old.prestamo_id AND L.lector_id = :old.lector_id);
+  
+    IF vtipoLector = 'TL1' THEN
       IF vresello < 1 THEN
         UPDATE prestamo 
         SET resello = vresello + 1, fechaResello = SYSDATE, fechaPrestamo = SYSDATE, fechaVencimiento = SYSDATE + 8
-        WHERE prestamo_id = vprestamo_id;
+        WHERE prestamo_id = :old.prestamo_id;
+      ELSE
+        DBMS_OUTPUT.PUT_LINE('Limite máximo de resellos alcanzados, favor de devolver el ejemplar');
+      END IF;
+    ELSIF vtipoLector = 'TL2' THEN
+      IF vresello < 2 THEN
+       UPDATE prestamo 
+        SET resello = vresello + 1, fechaResello = SYSDATE, fechaPrestamo = SYSDATE, fechaVencimiento = SYSDATE + 15
+        WHERE prestamo_id = :old.prestamo_id;
+      ELSE
+        DBMS_OUTPUT.PUT_LINE('Limite máximo de resellos alcanzados, favor de devolver el ejemplar');
+      END IF;
+    ELSE
+      IF vresello < 3 THEN
+        UPDATE prestamo 
+        SET resello = vresello + 1, fechaResello = SYSDATE, fechaPrestamo = SYSDATE, fechaVencimiento = SYSDATE + 30
+        WHERE prestamo_id = :old.prestamo_id;
+      ELSE
+        DBMS_OUTPUT.PUT_LINE('Limite máximo de resellos alcanzados, favor de devolver el ejemplar');
+      END IF;
+    END IF;
+end tgValidaReselloPrestamo;
+/
+
+update prestamo set prestamo_id = 'P5' WHERE prestamo_id = 'P5';
+
+
+--INTENTO 2
+create or replace trigger tgValidaReselloPrestamo
+  before update
+  on prestamo
+  FOR EACH ROW
+declare
+  vtipoLector CHAR(4);
+begin
+SELECT tipolector_id INTO vtipoLector
+FROM lector
+WHERE lector_id = :old.lector_id;
+  CASE
+    WHEN UPPER(vtipoLector) = 'TL1' THEN
+      IF :old.resello < 1 THEN
+        UPDATE prestamo 
+        SET resello = :old.resello + 1, fechaResello = SYSDATE, fechaPrestamo = SYSDATE, fechaVencimiento = SYSDATE + 8
+        WHERE prestamo_id = :old.prestamo_id;
       ELSE
         DBMS_OUTPUT.PUT_LINE('Limite máximo de resellos alcanzados, favor de devolver el ejemplar');
       END IF;
     WHEN UPPER(vtipoLector) = 'TL2' THEN
-      IF vresello < 2 THEN
+      IF :old.resello < 2 THEN
        UPDATE prestamo 
-        SET resello = vresello + 1, fechaResello = SYSDATE, fechaPrestamo = SYSDATE, fechaVencimiento = SYSDATE + 15
-        WHERE prestamo_id = vprestamo_id;
+        SET resello = :old.resello + 1, fechaResello = SYSDATE, fechaPrestamo = SYSDATE, fechaVencimiento = SYSDATE + 15
+        WHERE prestamo_id = :old.prestamo_id;
       ELSE
         DBMS_OUTPUT.PUT_LINE('Limite máximo de resellos alcanzados, favor de devolver el ejemplar');
       END IF;
     WHEN UPPER(vtipoLector) = 'TL3' THEN
-      IF vresello < 3 THEN
+      IF :old.resello < 3 THEN
        UPDATE prestamo 
-        SET resello = vresello + 1, fechaResello = SYSDATE, fechaPrestamo = SYSDATE, fechaVencimiento = SYSDATE + 30
-        WHERE prestamo_id = vprestamo_id;
+        SET RESELLO = :old.resello + 1, FECHARESELLO = SYSDATE, FECHAPRESTAMO = SYSDATE, FECHAVENCIMIENTO = SYSDATE + 30
+        WHERE prestamo_id = :old.prestamo_id;
       ELSE
         DBMS_OUTPUT.PUT_LINE('Limite máximo de resellos alcanzados, favor de devolver el ejemplar');
       END IF;
@@ -255,3 +299,63 @@ WHERE prestamo_id = :old.prestamo_id;
   END CASE;
 end tgValidaReselloPrestamo;
 /
+
+--INTENTO 3
+create or replace trigger tgValidaReselloPrestamo
+  before update
+  on prestamo
+  FOR EACH ROW
+declare
+  vtipoLector CHAR(4);
+begin
+SELECT tipolector_id INTO vtipoLector
+FROM lector
+WHERE lector_id = :old.lector_id;
+    IF vtipoLector = 'TL1' THEN
+        IF :old.resello < 1 THEN
+          UPDATE prestamo 
+          SET resello = :old.resello + 1, fechaResello = SYSDATE, fechaPrestamo = SYSDATE, fechaVencimiento = SYSDATE + 8
+          WHERE prestamo_id = :old.prestamo_id;
+        ELSE
+          DBMS_OUTPUT.PUT_LINE('Limite máximo de resellos alcanzados, favor de devolver el ejemplar');
+        END IF;
+    ELSIF vtipoLector = 'TL2' THEN
+        IF :old.resello < 2 THEN
+         UPDATE prestamo 
+          SET resello = :old.resello + 1, fechaResello = SYSDATE, fechaPrestamo = SYSDATE, fechaVencimiento = SYSDATE + 15
+          WHERE prestamo_id = :old.prestamo_id;
+        ELSE
+          DBMS_OUTPUT.PUT_LINE('Limite máximo de resellos alcanzados, favor de devolver el ejemplar');
+        END IF;
+    ELSE
+        IF :old.resello < 3 THEN
+         UPDATE prestamo 
+          SET RESELLO = :old.resello + 1, FECHARESELLO = SYSDATE, FECHAPRESTAMO = SYSDATE, FECHAVENCIMIENTO = SYSDATE + 30
+          WHERE prestamo_id = :old.prestamo_id;
+        ELSE
+          DBMS_OUTPUT.PUT_LINE('Limite máximo de resellos alcanzados, favor de devolver el ejemplar');
+        END IF;
+    END IF;
+end tgValidaReselloPrestamo;
+/
+
+--INTENTO 4
+CREATE OR REPLACE TRIGGER tgCancelaFactura
+BEFORE UPDATE ON vwprestamo
+BEGIN
+CREATE OR REPLACE VIEW vwprestamo
+as
+SELECT * FROM prestamo;
+END tgCancelaFactura;
+/
+
+
+CREATE OR REPLACE TRIGGER tgCancelaFactura
+INSTEAD OF UPDATE ON vwprestamo
+FOR EACH ROW
+BEGIN
+UPDATE prestamo SET FECHAPRESTAMO=SYSDATE, FECHARESELLO = SYSDATE
+WHERE prestamo_id = :old.prestamo_id;
+END tgCancelaFactura;
+/
+*/ 
