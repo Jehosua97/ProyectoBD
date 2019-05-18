@@ -34,6 +34,8 @@ FROM autor a
 JOIN escribe e ON (e.autor_id = a.autor_id)
 JOIN material m ON (e.material_id = m.material_id);
 
+assklj
+
 --------------------4.- LAZARO      Vista de estatus del MATERIAL.
 create or replace view vwCatalogoEstatusMaterial as
 select titulo,noEjemplar,descripcione
