@@ -188,8 +188,8 @@ CREATE OR REPLACE PROCEDURE AltaTesis(
 AS
   v_existeAutor NUMBER;
   v_existeDirector NUMBER;
-  v_material_id CHAR;
-  v_tesis_id CHAR;
+  v_material_id material.material_id%TYPE;
+  v_tesis_id tesis.tesis_id%TYPE;
 BEGIN
 
   --VERIFIACR SI EXITE EL MATERIAL_ID
@@ -250,8 +250,8 @@ END BajaTesis;
 
 /*ActualizaTesis*/
 CREATE OR REPLACE PROCEDURE ActualizaTesis(
-  vMaterial_id IN CHAR,
-  vCampo IN varchar2,
+  vMaterial_id IN material.material_id%TYPE,
+  vCampo IN VARCHAR2,
   vValor IN VARCHAR2
 )
 is
@@ -277,8 +277,8 @@ BEGIN
       UPDATE tesis SET carreraTema=vValor
       WHERE material_id = vMaterial_id;
 
-    WHEN UPPER(vCampo) = 'AÑOPUBLICACION' THEN
-      UPDATE tesis SET añoPublicacion=vValor
+    WHEN UPPER(vCampo) = 'ANOPUBLICACION' THEN
+      UPDATE tesis SET anoPublicacion=vValor
       WHERE material_id = vMaterial_id;
 
     WHEN UPPER(vCampo) = 'DIRECTOR_ID' THEN
@@ -286,7 +286,7 @@ BEGIN
       WHERE material_id = vMaterial_id;
 
     else
-      raise_application_error(-20054,'ERROR No existe ese campo');
+      raise_application_error(-20103,'ERROR No existe ese campo');
 
   end case;
 end;
