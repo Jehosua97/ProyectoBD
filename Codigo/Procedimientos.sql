@@ -600,7 +600,7 @@ CREATE OR REPLACE PROCEDURE AltaPrestamo(
   v_resello     IN prestamo.resello%TYPE,
   v_lector_id   IN prestamo.lecotr_id%TYPE,
   v_noEjemplar  IN prestamo.noEjemplar%TYPE,
-  v_material_id IN prestamo.material_id%TYPE,
+  v_material_id IN prestamo.material_id%TYPE
 )
 AS
 v_fechaPrestamo DATE := SYSDATE;
