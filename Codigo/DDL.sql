@@ -9,6 +9,7 @@ GRANT create ROLLBACK segment to proyecto;
 GRANT alter tablespace to proyecto;
 GRANT create session to proyecto;
 GRANT UNLIMITED TABLESPACE TO proyecto;
+CONNECT proyecto/proyecto
 SET SERVEROUTPUT ON
 /*Para iniciar desde cero teclear desde scott drop user proyecto cascade;*/
 
@@ -30,7 +31,7 @@ CREATE TABLE material(
   titulo VARCHAR2(20) NOT NULL,
   tipoMaterial CHAR(1) NOT NULL,
   CONSTRAINT PkMaterial PRIMARY KEY (material_id),
-  CONSTRAINT CktipoMaterial CHECK (tipoMaterial = 'L' OR tipoMaterial = 'T') 
+  CONSTRAINT CktipoMaterial CHECK (tipoMaterial = 'L' OR tipoMaterial = 'T')
   );
 
 CREATE TABLE escribe(
@@ -110,7 +111,7 @@ CREATE TABLE tipoLector(
   limiteDeMateriales CHAR(5) NOT NULL,
   refrendos CHAR(5) NOT NULL,
   diasPrestamo CHAR(5) NOT NULL,
-  CONSTRAINT PktipoLector PRIMARY KEY (tipolector_id) 
+  CONSTRAINT PktipoLector PRIMARY KEY (tipolector_id)
   );
 
 CREATE TABLE lector(

@@ -49,7 +49,7 @@ begin
     end if;
 
     --se asigna a la variable pertinente
-    vMaterial_id:= 'M' || SeqAltaLibro.NEXTVAL;
+    vMaterial_id:= 'M' || SeqAltaMaterial.NEXTVAL;
     --se inserta en la tabla material
     insert into material (material_id,ubicacion,colocacion,titulo,tipoMaterial)
     values(vMaterial_id,vUbicacion,vColocacion,vTitulo,vTipo);
@@ -174,31 +174,77 @@ show errors;
 /*AltaTesis*/
 set serveroutput on
 CREATE OR REPLACE PROCEDURE AltaTesis(
-  v_material_id     IN tesis.material_id%TYPE,
-  v_tesis_id        IN tesis.tesis_id%TYPE,
+  -- DATOS PARA TESIS
   v_carreraTema     IN tesis.carreraTema%TYPE,
-  v_añoPublicacion  IN tesis.añoPublicacion%TYPE,
-  v_director_id     IN tesis.director_id%TYPE
+  v_anoPublicacion  IN tesis.anoPublicacion%TYPE,
+  v_director_id     IN tesis.director_id%TYPE, -- YA DEBE DE EXISTIR EL DIRECTOR
+  -- DATOS PARA MATERIAL
+  v_ubicacion       IN material.ubicacion%TYPE,
+  v_colocacion      IN material.colocacion%TYPE,
+  v_titulo          IN material.titulo%TYPE,
+  -- DATOS PARA ESCRIBE .. YA DEBE DE EXISTIR EL AUTOR
+  v_autor_id        IN autor.autor_id%TYPE
 )
 AS
+  v_existeAutor NUMBER;
+  v_existeDirector NUMBER;
+  v_material_id CHAR;
+  v_tesis_id CHAR;
 BEGIN
-  INSERT INTO tesis
-  VALUES (vMaterial_id, v_tesis_id, v_carreraTema, v_añoPublicacion, v_director_id);
-  DBMS_OUTPUT.PUT_LINE('Se inserto un nuevo material tipo tesis:  ' || vMaterial_id);
-  COMMIT;
+
+  --VERIFIACR SI EXITE EL MATERIAL_ID
+  SELECT COUNT(*) INTO v_existeAutor -- si es 0 no existe
+  FROM autor
+  WHERE autor_id = v_autor_id;
+
+  SELECT COUNT(*) INTO v_existeDirector -- si es 0 no existe
+  FROM directorTesis
+  WHERE director_id = v_director_id;
+
+  IF v_existeAutor = 0 OR v_existeDirector = 0 THEN  --SI NO EXISTE AUTOR
+    raise_application_error(-20100,'ERROR Debe de existir autor y director');
+  ELSE
+    v_material_id := 'M' || SeqAltaMaterial.NEXTVAL;
+    v_tesis_id := 'T' || SeqAltaTesis.NEXTVAL;
+
+    INSERT INTO material
+    VALUES(v_material_id, v_ubicacion, v_colocacion, v_titulo, 'T');
+
+    INSERT INTO escribe
+    VALUES(v_material_id, v_autor_id);
+
+    INSERT INTO tesis
+    VALUES (v_material_id, v_tesis_id, v_carreraTema, v_anoPublicacion, v_director_id);
+    DBMS_OUTPUT.PUT_LINE('Se inserto un nuevo material tipo tesis:  ' || v_material_id);
+    COMMIT;
+  END IF;
 END AltaTesis;
 /
+show errors
 
 /*BajaTesis*/
 CREATE OR REPLACE PROCEDURE BajaTesis(
   v_material_id     IN tesis.material_id%TYPE
 )
 AS
+  v_existePrestamo NUMBER;
 BEGIN
-  DELETE tesis
+
+  SELECT COUNT(*) INTO v_existePrestamo
+  FROM prestamo
   WHERE material_id = v_material_id;
+
+  IF v_existePrestamo = 0 THEN
+  DELETE FROM ejemplar  WHERE material_id = v_material_id;
+  DELETE FROM tesis     WHERE material_id = v_material_id;
+  DELETE FROM escribe   WHERE material_id = v_material_id;
+  DELETE FROM material  WHERE material_id = v_material_id;
   COMMIT;
-  DBMS_OUTPUT.PUT_LINE('Se elimino el material tipo tesis con id:  ' || vgradoAcademico_id);
+  DBMS_OUTPUT.PUT_LINE('Se elimino el material tipo tesis con id:  ' || v_material_id);
+  ELSE
+    raise_application_error(-20101,'ERROR La tesis no debe estar en prestamo');
+  END IF;
+
 END BajaTesis;
 /
 
@@ -387,7 +433,7 @@ BEGIN
       WHERE vnoEjemplar = noEjemplar AND vMaterial_id = material_id;
     when upper(vCampo) = 'ESTATUS_ID' then
       UPDATE ejemplar SET  estatus_id = vValor
-      WHERE vnoEjemplar = noEjemplar AND vMaterial_id = material_id;      
+      WHERE vnoEjemplar = noEjemplar AND vMaterial_id = material_id;
   ELSE
     raise_application_error(-20051,'ERROR No existe ese campo, o usted no lo puede modificar');
   END CASE;
@@ -740,4 +786,3 @@ BEGIN
   DBMS_OUTPUT.PUT_LINE('Se actualizó el grado academico con id:  ' || vgradoAcademico_id);
 END ActualizaGradoAcademico;
 /
-

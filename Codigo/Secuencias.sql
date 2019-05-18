@@ -7,7 +7,15 @@ create sequence SeqAltaMultas
   nocycle;
 
 --Procedmineto AltaLibro
-create sequence SeqAltaLibro
+create sequence SeqAltaMaterial
+  start with 0
+  increment by 1
+  maxvalue 1000
+  minvalue 0
+  nocycle;
+
+  --Procedmineto AltaTesis, para el tesis_id
+create sequence SeqAltaTesis
   start with 0
   increment by 1
   maxvalue 1000
