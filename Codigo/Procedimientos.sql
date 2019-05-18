@@ -596,49 +596,114 @@ show errors
 /*AltaPrestamo*/
 set serveroutput on
 CREATE OR REPLACE PROCEDURE AltaPrestamo(
-  v_prestamoId  IN prestamo.prestamoId%TYPE,
   v_resello     IN prestamo.resello%TYPE,
-  v_lector_id   IN prestamo.lecotr_id%TYPE,
+  v_lector_id   IN prestamo.lector_id%TYPE, --YA DEBE DE EXISTIR EL LECTOR
   v_noEjemplar  IN prestamo.noEjemplar%TYPE,
   v_material_id IN prestamo.material_id%TYPE
 )
 AS
+v_estatus_id ejemplar.estatus_id%TYPE;
+v_fechaVigenciaLector lector.fechaVigenciaLector%TYPE;
+v_prestamo_id  prestamo.prestamo_id%TYPE;
+v_diasPrestamo tipoLector.diasPrestamo%TYPE;
+v_limiteDeMateriales NUMBER;
+v_numeroDeMateriales NUMBER;
 v_fechaPrestamo DATE := SYSDATE;
-v_fechaVencimiento DATE := SYSDATE + 5;
+v_fechaVencimiento DATE;
 BEGIN
-  INSERT INTO prestamo
-  VALUES (v_prestamoId, v_resello, NULL, v_fechaPrestamo, v_fechaVencimiento,,v_lector_id, v_noEjemplar, v_material_id);
-  DBMS_OUTPUT.PUT_LINE('Se realizó el prestamo del material:  ' || v_material_id|| ' Al lector: '|| v_lector_id);
-  COMMIT;
+
+  SELECT estatus_id INTO v_estatus_id
+  FROM ejemplar
+  WHERE noEjemplar = v_noEjemplar;
+
+  SELECT fechaVigenciaLector INTO v_fechaVigenciaLector
+  FROM lector
+  WHERE lector_id = v_lector_id;
+
+
+
+  IF v_estatus_id = 'ES1' THEN
+    IF v_fechaVigenciaLector < SYSDATE THEN
+        SELECT tl.limiteDeMateriales INTO v_limiteDeMateriales
+        FROM tipoLector tl
+        JOIN lector l
+        ON l.tipoLector_id = tl.tipoLector_id
+        WHERE l.lector_id = v_lector_id;
+
+        SELECT COUNT(*) INTO v_numeroDeMateriales
+        FROM prestamo
+        WHERE lector_id = v_lector_id;
+
+        IF v_limiteDeMateriales > v_numeroDeMateriales THEN
+
+          SELECT tl.diasPrestamo INTO v_diasPrestamo
+          FROM tipoLector tl
+          JOIN lector l
+          ON l.tipoLector_id = tl.tipoLector_id
+          WHERE l.lector_id = v_lector_id;
+
+          v_fechaVencimiento := v_fechaVencimiento + v_diasPrestamo;
+          v_prestamo_id := 'P' || SeqAltaPrestamo.NEXTVAL;
+          INSERT INTO prestamo
+          VALUES (v_prestamo_id, v_resello, NULL, v_fechaPrestamo, v_fechaVencimiento, v_lector_id, v_noEjemplar, v_material_id);
+          DBMS_OUTPUT.PUT_LINE('Se realizó el prestamo del material:  ' || v_material_id|| ' Al lector: '|| v_lector_id);
+          COMMIT;
+        ELSE
+          raise_application_error(-20106,'ERROR Numero de prestamos excedido');
+        END IF;
+    ELSE
+      raise_application_error(-20105,'ERROR La fecha del lector a vencido');
+    END IF;
+  ELSE
+    raise_application_error(-20104,'ERROR El estatus del ejemplar debe ser disponible');
+  END IF;
 END AltaPrestamo;
 /
 
 /*BajaPrestamo*/
 CREATE OR REPLACE PROCEDURE BajaPrestamo(
-  v_prestamoId  IN prestamo.prestamoId%TYPE,
+  v_prestamo_id  IN prestamo.prestamo_id%TYPE
 )
 AS
 BEGIN
-  DELETE prestamo
-  WHERE prestamoId = v_prestamoId;
+  DELETE FROM prestamo WHERE prestamo_id = v_prestamo_id;
   COMMIT;
-  DBMS_OUTPUT.PUT_LINE('Se ha devuelto el material:  ' || v_material_id);
+  DBMS_OUTPUT.PUT_LINE('Se ha devuelto el material con prestamo_id:  ' || v_prestamo_id);
 END BajaPrestamo;
 /
 
 /*ActualizaPrestamo*/
 CREATE OR REPLACE PROCEDURE ActualizaPrestamo(
-  vprestamoId IN CHAR,
+  vprestamo_id IN CHAR,
   vCampo IN varchar2,
   vValor IN VARCHAR2
 )
 is
 vFecha DATE;
+vRefrendo NUMBER;
+v_diasPrestamo NUMBER;
 BEGIN
+
+  SELECT tl.refrendos, tl.diasPrestamo INTO vRefrendo, v_diasPrestamo
+  FROM tipoLector tl
+  JOIN lector l
+  ON l.tipoLector_id = tl.tipoLector_id
+  JOIN prestamo p
+  ON p.lector_id = l.lector_id
+  WHERE p.prestamo_id = vprestamo_id;
+
   CASE
     WHEN UPPER(vCampo) = 'RESELLO' THEN
-      UPDATE prestamo SET resello = vValor
-      WHERE prestamoId = vprestamoId;
+      IF vValor < vRefrendo THEN
+        UPDATE prestamo SET resello = vValor
+        WHERE prestamo_id = vprestamo_id; --SE ACTUALIZA EL NUMERO DE RESELLOS
+        UPDATE prestamo SET fechaResello = SYSDATE
+        WHERE prestamo_id = vprestamo_id; -- SE ACTUALIZA LA FECHA EN LA QUE SE RESELLO
+        UPDATE prestamo SET fechaVencimiento = SYSDATE + v_diasPrestamo
+        WHERE prestamo_id = vprestamo_id; -- SE CALCULA OTRAVEZ LA FECHA DE VENCIMIENTO
+      ELSE
+        raise_application_error(-20107,'ERROR Numero de resellos excedido');
+      END IF;
 
     WHEN UPPER(vCampo) = 'FECHARESELLO' THEN
       IF TO_DATE(vValor,'dd/mm/yy') = SYSDATE THEN
@@ -650,7 +715,7 @@ BEGIN
       UPDATE prestamo
       SET fecharesello = vFecha,
           fechaVencimiento = vFecha+5
-      WHERE prestamoID = vprestamoId;
+      WHERE prestamo_id = vprestamo_id;
 
     WHEN UPPER(vCampo) = 'FECHAPRESTAMO' THEN
 
@@ -663,23 +728,22 @@ BEGIN
       UPDATE prestamo
       SET fechaPrestamo = vFecha,
           fechaVencimiento = vFecha+5
-          WHERE prestamoID = vprestamoId;
+          WHERE prestamo_id = vprestamo_id;
 
     WHEN UPPER(vCampo) = 'LECTOR_ID' THEN
-      UPDATE prestamo SET lecotr_id = vValor
-      WHERE prestamoId = vprestamoId;
+      UPDATE prestamo SET lector_id = vValor
+      WHERE prestamo_id = vprestamo_id;
 
     WHEN UPPER(vCampo) = 'NOEJEMPLAR' THEN
       UPDATE prestamo SET noEjemplar = vValor
-      WHERE prestamoId = vprestamoId;
+      WHERE prestamo_id = vprestamo_id;
 
     WHEN UPPER(vCampo) = 'MATERIAL_ID' THEN
       UPDATE prestamo SET material_id = vValor
-      WHERE prestamoId = vprestamoId;
+      WHERE prestamo_id = vprestamo_id;
 
     else
       raise_application_error(-20054,'ERROR No existe ese campo');
-
   end case;
 end;
 /
