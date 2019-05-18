@@ -99,8 +99,7 @@ BEGIN
   END IF;
 END tgRevisarResello;
 /
-
------------4.- JOYA           Al realizarse una devolución en tiempo, se eliminará el préstamo.
+-----------4.- JOYA           Al realizarse una devolución en tiempo, se eliminará el préstamo (y se generará una multa). 
 CREATE OR REPLACE TRIGGER tgDevolEliminPrest
   AFTER DELETE
   ON prestamo
@@ -109,9 +108,6 @@ CREATE OR REPLACE TRIGGER tgDevolEliminPrest
     vprestamo_id CHAR(5);
     vfechaVenci DATE;
   BEGIN
-    --SELECT prestamo_id, fechaVencimiento INTO vprestamo_id, vfechaVenci
-    --FROM prestamo
-    --WHERE prestamo_id = :old.prestamo_id;
     IF :old.fechaVencimiento >= SYSDATE THEN
       DBMS_OUTPUT.PUT_LINE('Se eliminó prestamo con id ' ||  :old.prestamo_id);
     ELSE
