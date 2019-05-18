@@ -176,3 +176,45 @@ begin
 end;
 /
 show errors
+
+create or replace trigger tgValidaReselloPrestamo
+  before update
+  on prestamo
+  FOR EACH ROW
+declare
+  vtipoLector CHAR(4);
+begin
+SELECT tipolector_id INTO vtipoLector
+FROM lector
+WHERE lector_id = :old.lector_id;
+  CASE
+    WHEN UPPER(vtipoLector) = 'TL1' THEN
+      IF :old.resello < 1 THEN
+        UPDATE prestamo 
+        SET resello = :old.resello + 1, fechaResello = SYSDATE, fechaPrestamo = SYSDATE, fechaVencimiento = SYSDATE + 8
+        WHERE prestamo_id = :old.prestamo_id;
+      ELSE
+        DBMS_OUTPUT.PUT_LINE('Limite máximo de resellos alcanzados, favor de devolver el ejemplar');
+      END IF;
+    WHEN UPPER(vtipoLector) = 'TL2' THEN
+      IF :old.resello < 2 THEN
+       UPDATE prestamo 
+        SET resello = :old.resello + 1, fechaResello = SYSDATE, fechaPrestamo = SYSDATE, fechaVencimiento = SYSDATE + 15
+        WHERE prestamo_id = :old.prestamo_id;
+      ELSE
+        DBMS_OUTPUT.PUT_LINE('Limite máximo de resellos alcanzados, favor de devolver el ejemplar');
+      END IF;
+    WHEN UPPER(vtipoLector) = 'TL3' THEN
+      IF :old.resello < 3 THEN
+       UPDATE prestamo 
+        SET resello = :old.resello + 1, fechaResello = SYSDATE, fechaPrestamo = SYSDATE, fechaVencimiento = SYSDATE + 30
+        WHERE prestamo_id = :old.prestamo_id;
+      ELSE
+        DBMS_OUTPUT.PUT_LINE('Limite máximo de resellos alcanzados, favor de devolver el ejemplar');
+      END IF;
+  ELSE
+      raise_application_error(-20054,'ERROR No existe ese campo');
+  END CASE;
+end tgValidaReselloPrestamo;
+/
+show errors
