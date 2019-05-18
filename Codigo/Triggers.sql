@@ -99,19 +99,6 @@ BEGIN
   END IF;
 END tgRevisarResello;
 /
------------4.- JOYA           Al realizarse una devolución en tiempo, se eliminará el préstamo y/o se generará una multa. 
-  CREATE OR REPLACE PACKAGE pkprestamo
-    AS
-      PRESTAMO_ID CHAR(5),
-      RESELLO NUMBER,
-      FECHARESELLO DATE,
-      FECHAPRESTAMO DATE,
-      FECHAVENCIMIENTO DATE,
-      LECTOR_ID CHAR(10),
-      NOEJEMPLAR CHAR(10),
-      MATERIAL_ID CHAR(5)
-  END;
-
 
 -----------4.- JOYA           Al realizarse una devolución en tiempo, se eliminará el préstamo.
 CREATE OR REPLACE TRIGGER tgDevolEliminPrest
