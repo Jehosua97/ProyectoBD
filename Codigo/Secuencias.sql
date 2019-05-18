@@ -6,8 +6,16 @@ create sequence SeqAltaMultas
   minvalue 0
   nocycle;
 
---Procedmineto AltaLibro
+--Procedmineto AltaMaterial
 create sequence SeqAltaMaterial
+  start with 0
+  increment by 1
+  maxvalue 1000
+  minvalue 0
+  nocycle;
+
+--sequencia AltaLibro
+create sequence SeqAltalibro
   start with 0
   increment by 1
   maxvalue 1000

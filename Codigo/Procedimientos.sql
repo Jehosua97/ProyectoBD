@@ -12,7 +12,6 @@ create or replace procedure AltaLibro(
   --tomamos en cuenta que el autor existe
   vAutor_id in char,
   --parametros para agregar a la tabla libro
-  vNoAdquisicion in char,
   vISBN in char,
   vTema in varchar2,
   vEdicion in varchar2
@@ -40,13 +39,7 @@ begin
     into vCantidadDeLibros
     from material;
 
-    if vNoAdquisicion is null then
-      select count(*)+1
-      into vCantidadDeAdquisiciones
-      from libro;
-    else
-      vCantidadDeAdquisiciones:=vNoAdquisicion;
-    end if;
+    vCantidadDeAquisiciones:=SeqAltalibro.nextval;
 
     --se asigna a la variable pertinente
     vMaterial_id:= 'M' || SeqAltaMaterial.NEXTVAL;
