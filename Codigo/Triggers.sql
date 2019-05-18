@@ -99,7 +99,8 @@ BEGIN
   END IF;
 END tgRevisarResello;
 /
------------4.- JOYA           Al realizarse una devolución en tiempo, se eliminará el préstamo (y se generará una multa). 
+
+-----------4.- JOYA           Al realizarse una devolución en tiempo, se eliminará el préstamo.
 CREATE OR REPLACE TRIGGER tgDevolEliminPrest
   AFTER DELETE
   ON prestamo
@@ -108,6 +109,9 @@ CREATE OR REPLACE TRIGGER tgDevolEliminPrest
     vprestamo_id CHAR(5);
     vfechaVenci DATE;
   BEGIN
+    --SELECT prestamo_id, fechaVencimiento INTO vprestamo_id, vfechaVenci
+    --FROM prestamo
+    --WHERE prestamo_id = :old.prestamo_id;
     IF :old.fechaVencimiento >= SYSDATE THEN
       DBMS_OUTPUT.PUT_LINE('Se eliminó prestamo con id ' ||  :old.prestamo_id);
     ELSE
@@ -173,38 +177,76 @@ end;
 /
 show errors
 
+CREATE TABLE prestamo2(
+  prestamo_id CHAR(5) NOT NULL,
+  resello NUMBER NOT NULL,
+  fechaResello DATE NULL,
+  fechaPrestamo DATE DEFAULT SYSDATE NOT NULL,
+  fechaVencimiento DATE NOT NULL,
+  lector_id CHAR(10) NOT NULL,
+  noEjemplar CHAR(10) NOT NULL,
+  material_id CHAR(5) NOT NULL
+  );
+
+CREATE OR REPLACE TRIGGER tgPackagePrestamo
+BEFORE UPDATE ON prestamo
+DECLARE
+  CURSOR cur_prestamo IS
+    SELECT * FROM prestamo;
+BEGIN
+  DELETE prestamo2;
+  FOR cCurso IN cur_prestamo LOOP
+    INSERT INTO prestamo2 
+    VALUES( cCurso.PRESTAMO_ID,
+            cCurso.RESELLO,
+            cCurso.FECHARESELLO,
+            cCurso.FECHAPRESTAMO,
+            cCurso.FECHAVENCIMIENTO,
+            cCurso.LECTOR_ID,
+            cCurso.NOEJEMPLAR,
+            cCurso.MATERIAL_ID);
+    END LOOP;
+END tgPackagePrestamo;
+/
+
+
 create or replace trigger tgValidaReselloPrestamo
   before update
   on prestamo
   FOR EACH ROW
 declare
   vtipoLector CHAR(4);
+  vresello NUMBER(20);
+  vprestamo_id CHAR(5);
 begin
 SELECT tipolector_id INTO vtipoLector
 FROM lector
-WHERE lector_id = :old.lector_id;
+WHERE lector_id = :new.lector_id;
+SELECT resello, prestamo_id INTO vresello, vprestamo_id
+FROM prestamo2 
+WHERE prestamo_id = :old.prestamo_id;
   CASE
     WHEN UPPER(vtipoLector) = 'TL1' THEN
-      IF :old.resello < 1 THEN
+      IF vresello < 1 THEN
         UPDATE prestamo 
-        SET resello = :old.resello + 1, fechaResello = SYSDATE, fechaPrestamo = SYSDATE, fechaVencimiento = SYSDATE + 8
-        WHERE prestamo_id = :old.prestamo_id;
+        SET resello = vresello + 1, fechaResello = SYSDATE, fechaPrestamo = SYSDATE, fechaVencimiento = SYSDATE + 8
+        WHERE prestamo_id = vprestamo_id;
       ELSE
         DBMS_OUTPUT.PUT_LINE('Limite máximo de resellos alcanzados, favor de devolver el ejemplar');
       END IF;
     WHEN UPPER(vtipoLector) = 'TL2' THEN
-      IF :old.resello < 2 THEN
+      IF vresello < 2 THEN
        UPDATE prestamo 
-        SET resello = :old.resello + 1, fechaResello = SYSDATE, fechaPrestamo = SYSDATE, fechaVencimiento = SYSDATE + 15
-        WHERE prestamo_id = :old.prestamo_id;
+        SET resello = vresello + 1, fechaResello = SYSDATE, fechaPrestamo = SYSDATE, fechaVencimiento = SYSDATE + 15
+        WHERE prestamo_id = vprestamo_id;
       ELSE
         DBMS_OUTPUT.PUT_LINE('Limite máximo de resellos alcanzados, favor de devolver el ejemplar');
       END IF;
     WHEN UPPER(vtipoLector) = 'TL3' THEN
-      IF :old.resello < 3 THEN
+      IF vresello < 3 THEN
        UPDATE prestamo 
-        SET resello = :old.resello + 1, fechaResello = SYSDATE, fechaPrestamo = SYSDATE, fechaVencimiento = SYSDATE + 30
-        WHERE prestamo_id = :old.prestamo_id;
+        SET resello = vresello + 1, fechaResello = SYSDATE, fechaPrestamo = SYSDATE, fechaVencimiento = SYSDATE + 30
+        WHERE prestamo_id = vprestamo_id;
       ELSE
         DBMS_OUTPUT.PUT_LINE('Limite máximo de resellos alcanzados, favor de devolver el ejemplar');
       END IF;
@@ -213,4 +255,3 @@ WHERE lector_id = :old.lector_id;
   END CASE;
 end tgValidaReselloPrestamo;
 /
-show errors
