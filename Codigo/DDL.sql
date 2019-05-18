@@ -1,3 +1,4 @@
+--drop user proyecto cascade;
 --Creando el usuario proyecto desde "scott" y dándole permisos
 CREATE USER proyecto IDENTIFIED BY proyecto;
 GRANT create table to proyecto;
@@ -9,6 +10,7 @@ GRANT create ROLLBACK segment to proyecto;
 GRANT alter tablespace to proyecto;
 GRANT create session to proyecto;
 GRANT UNLIMITED TABLESPACE TO proyecto;
+
 CONNECT proyecto/proyecto
 SET SERVEROUTPUT ON
 /*Para iniciar desde cero teclear desde scott drop user proyecto cascade;*/
@@ -171,3 +173,8 @@ CREATE TABLE multa(
   CONSTRAINT FkLectorId FOREIGN KEY (lector_id)
   REFERENCES lector(lector_id) ON DELETE set null
   );
+@Secuencias.sql
+@Procedimientos.sql
+@Triggers.sql
+@Vistas.sql
+

@@ -44,3 +44,24 @@ create sequence SeqAltaPrestamo
   maxvalue 1000
   minvalue 0
   nocycle;
+--secuencia para alta de autor
+create sequence SeqAltaAutor
+  start with 0
+  increment by 1
+  maxvalue 1000
+  minvalue 0
+  nocycle;
+--secuencia director tesis
+create sequence SeqAltaDirectorTesis
+  start with 0
+  increment by 1
+  maxvalue 1000
+  minvalue 0
+  nocycle;
+--secuencia altaejemplar
+create sequence SeqAltaEjemplar
+  start with 0
+  increment by 1
+  maxvalue 1000
+  minvalue 0
+  nocycle;
