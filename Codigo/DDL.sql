@@ -30,7 +30,7 @@ CREATE TABLE material(
   material_id CHAR(5) NOT NULL,
   ubicacion VARCHAR2(20) NOT NULL,
   colocacion VARCHAR2(20) NOT NULL,
-  titulo VARCHAR2(20) NOT NULL,
+  titulo VARCHAR2(100) NOT NULL,
   tipoMaterial CHAR(1) NOT NULL,
   CONSTRAINT PkMaterial PRIMARY KEY (material_id),
   CONSTRAINT CktipoMaterial CHECK (tipoMaterial = 'L' OR tipoMaterial = 'T')
@@ -49,8 +49,8 @@ CREATE TABLE escribe(
 CREATE TABLE libro(
   material_id CHAR(5) NOT NULL,
   noAdquisicion CHAR(10) NOT NULL,
-  ISBN CHAR(10) NOT NULL,
-  tema VARCHAR2(20) NOT NULL,
+  ISBN CHAR(16) NOT NULL,
+  tema VARCHAR2(50) NOT NULL,
   edicion VARCHAR2(20) NOT NULL,
   CONSTRAINT PkLibro PRIMARY KEY (material_id),
   CONSTRAINT FkLibro FOREIGN KEY (material_id)
