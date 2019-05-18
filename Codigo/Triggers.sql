@@ -82,7 +82,7 @@ END tgPrestamoEjemplar;
 /
 
 --Pruebas para ejecutar
---INSERT INTO prestamo VALUES ('P10', 0, '08/10/16', SYSDATE, '10/10/16', 'L1', 'EJ1', 'M1');
+--INSERT INTO prestamo VALUES ('P'||SeqAltaPrestamo.NEXTVAL, 0, '08/10/16', SYSDATE, '10/10/16', 'L1', 'EJ1', 'M1');
 --SELECT * FROM ejemplar e JOIN estatus s ON e.estatus_id=s.estatus_id;
 
 -----------3.- CHAVIRA        El resello de un material se realiza únicamente en la fecha de vencimiento del préstamo en función del tipo de lector. -- Chavira
@@ -92,7 +92,6 @@ FOR EACH ROW
 BEGIN
   IF TRUNC(:OLD.fechaResello-SYSDATE)=0 THEN
     DBMS_OUTPUT.PUT_LINE('La fecha de resello coincide con la fecha actual.');
-    --MANDAR A LLAMAR PROCEDIMIENTO ACTUALIZA PRESTAMO
   ELSIF :OLD.fechaResello<SYSDATE THEN
     RAISE_APPLICATION_ERROR(-20097,'Este libro ya pasó su fecha de resello. Debe expedirse una multa.');
   ELSE
@@ -100,25 +99,37 @@ BEGIN
   END IF;
 END tgRevisarResello;
 /
+-----------4.- JOYA           Al realizarse una devolución en tiempo, se eliminará el préstamo y/o se generará una multa. 
+  CREATE OR REPLACE PACKAGE pkprestamo
+    AS
+      PRESTAMO_ID CHAR(5),
+      RESELLO NUMBER,
+      FECHARESELLO DATE,
+      FECHAPRESTAMO DATE,
+      FECHAVENCIMIENTO DATE,
+      LECTOR_ID CHAR(10),
+      NOEJEMPLAR CHAR(10),
+      MATERIAL_ID CHAR(5)
+  END;
+
+
 -----------4.- JOYA           Al realizarse una devolución en tiempo, se eliminará el préstamo.
-  CREATE OR REPLACE TRIGGER tgDevolEliminPrest
-  BEFORE DELETE
+CREATE OR REPLACE TRIGGER tgDevolEliminPrest
+  AFTER DELETE
   ON prestamo
   FOR EACH ROW
   DECLARE
     vprestamo_id CHAR(5);
     vfechaVenci DATE;
-    vLectorid CHAR(5);
   BEGIN
-    SELECT prestamo_id, fechaVencimiento, lector_id INTO vprestamo_id, vfechaVenci, vLectorid
-    FROM prestamo
-    WHERE prestamo_id = :old.prestamo_id;
-    IF vfechaVenci >= SYSDATE THEN
+    --SELECT prestamo_id, fechaVencimiento INTO vprestamo_id, vfechaVenci
+    --FROM prestamo
+    --WHERE prestamo_id = :old.prestamo_id;
+    IF :old.fechaVencimiento >= SYSDATE THEN
       DBMS_OUTPUT.PUT_LINE('Se eliminó prestamo con id ' ||  :old.prestamo_id);
     ELSE
-      AltaMulta(vprestamo_id, vLectorid, vfechaVenci);
-      --INSERT INTO multa
-      --VALUES('M' || seqAltaMultas.NEXTVAL, :old.prestamo_id, SYSDATE, (SYSDATE - :old.fechaVencimiento)*10, SYSDATE - :old.fechaVencimiento);
+      INSERT INTO multa
+      VALUES('MU' || seqAltaMultas.NEXTVAL, :old.lector_id, SYSDATE, (TRUNC(SYSDATE - :old.fechaVencimiento))*10, TRUNC(SYSDATE - :old.fechaVencimiento));
     END IF;
   END tgDevolEliminPrest;
   /

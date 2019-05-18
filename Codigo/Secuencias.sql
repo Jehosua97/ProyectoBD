@@ -1,13 +1,5 @@
- --Procedmineto AltaMultas
- create sequence SeqAltamulta
-  start with 0
-  increment by 1
-  maxvalue 1000
-  minvalue 0
-  nocycle;
-
- --Procedmineto AltaEjemplar
- create sequence SeqAltaEjemplar
+--Procedmineto AltaMultas
+create sequence SeqAltaMultas
   start with 0
   increment by 1
   maxvalue 1000
@@ -24,6 +16,13 @@ create sequence SeqAltaLibro
 
 --Procedmineto AltaGradoAcademico
 create sequence SeqAltaGradoAcademico
+  start with 0
+  increment by 1
+  maxvalue 1000
+  minvalue 0
+  nocycle;
+
+create sequence SeqAltaPrestamo
   start with 0
   increment by 1
   maxvalue 1000
