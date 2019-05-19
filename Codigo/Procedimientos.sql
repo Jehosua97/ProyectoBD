@@ -751,11 +751,11 @@ end;
 /
 
 CREATE OR REPLACE PROCEDURE resello(
-  vprestamo_id in CHAR
+  vprestamo_id in prestamo.prestamo_id%TYPE
 )
 AS
-  vresello NUMBER(2);
-  vLector_id CHAR(6);
+  vresello prestamo.resello%TYPE;
+  vLector_id lector.lector_id%TYPE;
   vtipolector CHAR(4);
 BEGIN 
 SELECT resello, lector_id INTO vresello, vLector_id
@@ -769,16 +769,25 @@ CASE
     IF vresello < 1 THEN
       UPDATE prestamo 
       SET fecharesello = SYSDATE, fechaPrestamo = SYSDATE, FECHAVENCIMIENTO = SYSDATE + 8, resello = resello + 1
-      WHERE prestamo_id =
+      WHERE prestamo_id = vprestamo_id;
     ELSE
+      DBMS_OUTPUT.PUT_LINE('Favor de devolver el libro');
     END IF;
   WHEN UPPER(vtipolector) = 'TL2' THEN
     IF vresello < 2 THEN
+      UPDATE prestamo 
+      SET fecharesello = SYSDATE, fechaPrestamo = SYSDATE, FECHAVENCIMIENTO = SYSDATE + 15, resello = resello + 1
+      WHERE prestamo_id = vprestamo_id;
     ELSE
+      DBMS_OUTPUT.PUT_LINE('Favor de devolver el libro');
     END IF;
 ELSE
     IF vresello < 3 THEN
+      UPDATE prestamo 
+      SET fecharesello = SYSDATE, fechaPrestamo = SYSDATE, FECHAVENCIMIENTO = SYSDATE + 30, resello = resello + 1
+      WHERE prestamo_id = vprestamo_id;
     ELSE
+      DBMS_OUTPUT.PUT_LINE('Favor de devolver el libro');
     END IF;
 END CASE;
 END resello;

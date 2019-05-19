@@ -68,8 +68,11 @@ EXEC ActualizaLector('L1', 'FECHAALTALECTOR', '01/01/13');
 EXEC AltaPrestamo('L1', 'EJ2', 'M3');
 /*******Procedimiento Actualiza Prestamo (Oscar)*********/
 EXEC ActualizaPrestamo('P3', 'RESELLO', '1');
+/*******Procedimiento resello (Joya)*********/
+--EXEC resello(prestamo_id);
+EXEC resello('P2');
 /*******Procedimiento Borra Prestamo (Oscar)*********/
-EXEC BajaPrestamo('P3');
+EXEC BajaPrestamo('P9');
 
 /*******Procedimiento Alta Multa (Chavira)*********/
 --EXEC AltaMulta(PRESTAMO_ID, LECTOR_ID, FECHAVENCIMIENTO);
