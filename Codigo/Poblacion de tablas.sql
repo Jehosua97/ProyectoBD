@@ -91,16 +91,28 @@ INSERT INTO estatus VALUES ('ES3', 'No deja biblioteca');
 INSERT INTO estatus VALUES ('ES4', 'En mantenimiento');
 
 --ejemplares
-declare
-  vMaterial_id char(5);
-begin
+--declare
+--  vMaterial_id char(5);
+--begin
+--
+--for i in 1..10 loop
+--select material_id into vMaterial_id from (select material_id from material order by dbms_random.value) where rownum=1;
+--AltaEjemplar(vMaterial_id);
+--end loop;
+--end;
+--/
+EXEC AltaEjemplar('M1');
+EXEC AltaEjemplar('M1');
+EXEC AltaEjemplar('M1');
+EXEC AltaEjemplar('M2');
+EXEC AltaEjemplar('M2');
+EXEC AltaEjemplar('M2');
+EXEC AltaEjemplar('M3');
+EXEC AltaEjemplar('M4');
+EXEC AltaEjemplar('M5');
+EXEC AltaEjemplar('M6');
+EXEC AltaEjemplar('M7');
 
-for i in 1..10 loop
-select material_id into vMaterial_id from (select material_id from material order by dbms_random.value) where rownum=1;
-AltaEjemplar(vMaterial_id);
-end loop;
-end;
-/
 
 --tipo lector
 INSERT INTO tipoLector VALUES ('TL1', 'Estudiante', '3', '1','8' );
@@ -137,16 +149,16 @@ end;
 /
 
 --prestamos
-EXEC altaprestamo ('L1', 'EJ1', 'M1');
-EXEC altaprestamo ('L1', 'EJ1', 'M2');
-EXEC altaprestamo ('L1', 'EJ2', 'M2');
-EXEC altaprestamo ('L3', 'EJ1', 'M4');
-EXEC altaprestamo ('L4', 'EJ3', 'M1');
-EXEC altaprestamo ('L5', 'EJ2', 'M2');
-EXEC altaprestamo ('L6', 'EJ4', 'M3');
-EXEC altaprestamo ('L7', 'EJ1', 'M1');
-EXEC altaprestamo ('L8', 'EJ1', 'M1');
-EXEC altaprestamo ('L9', 'EJ1', 'M1');
+EXEC altaprestamo('L1', 'EJ1', 'M1');
+EXEC altaprestamo('L1', 'EJ1', 'M2');
+EXEC altaprestamo('L1', 'EJ2', 'M2');
+EXEC altaprestamo('L3', 'EJ1', 'M4');
+EXEC altaprestamo('L4', 'EJ3', 'M1');
+EXEC altaprestamo('L5', 'EJ3', 'M2');
+EXEC altaprestamo('L6', 'EJ1', 'M3');
+EXEC altaprestamo('L7', 'EJ1', 'M5');
+EXEC altaprestamo('L8', 'EJ1', 'M6');
+EXEC altaprestamo('L9', 'EJ1', 'M7');
 
 UPDATE prestamo SET fecharesello = SYSDATE - 20, fechaprestamo = SYSDATE - 20, fechavencimiento = SYSDATE - 12 WHERE LECTOR_ID = 'L5'; 
 UPDATE prestamo SET fecharesello = SYSDATE - 40, fechaprestamo = SYSDATE - 40, fechavencimiento = SYSDATE - 20 WHERE LECTOR_ID = 'L6'; 
