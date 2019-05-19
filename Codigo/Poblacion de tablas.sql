@@ -38,6 +38,12 @@ AltaLibro('segundo piso', 'abajo', 'Kid from Brooklyn, The','L', vAutor_id, '385
 end;
 /
 
+--grado academico
+INSERT INTO gradoAcademico VALUES ('GA1', 'Universidad');
+INSERT INTO gradoAcademico VALUES ('GA2', 'Maestria');
+INSERT INTO gradoAcademico VALUES ('GA3', 'Doctorado');
+
+
 --director tesis
 declare
   vDescripcionGA varchar2(20);
@@ -66,22 +72,25 @@ end;
 /
 
 --Tesis
-
---grado academico
-INSERT INTO gradoAcademico VALUES ('GA1', 'Kinder');
-INSERT INTO gradoAcademico VALUES ('GA2', 'Secu');
-INSERT INTO gradoAcademico VALUES ('GA3', 'Prepa');
+EXEC AltaTesis('Ingenieria','2000','D0','Mexico','Abajo','Algebra1','A0');
+EXEC AltaTesis('Aquitectura','2010','D2','EU','Arriba','Recursos de Construccion','A1');
+EXEC AltaTesis('Bilogia','2002','D1','Brasil','Arriba','Biologia Celular','A2');
+EXEC AltaTesis('Fisica','1993','D2','Canada','Abajo','Newton','A3');
+EXEC AltaTesis('Fisica','2003','D3','Mexico','AbaArribajo','Caida Libre','A3');
+EXEC AltaTesis('Ingenieria','2004','D6','Reino Unido','Arriba','Calculo V','A4');
+EXEC AltaTesis('Electricidad','2009','D6','Venezuela','Abajo','Ley de Ohm','A7');
+EXEC AltaTesis('Contabilidad','2019','D8','Colombia','Arriba','Sumas y restas','A4');
+EXEC AltaTesis('Medicina','2001','D9','Mexico','Abajo','Medicina Fam','A5');
+EXEC AltaTesis('Veterinaria','2000','D4','Peru','Arriba','Perritos 1','A3');
 
 
 --estatus
-
 INSERT INTO estatus VALUES ('ES1', 'Disponible');
 INSERT INTO estatus VALUES ('ES2', 'Prestado');
 INSERT INTO estatus VALUES ('ES3', 'No deja biblioteca');
 INSERT INTO estatus VALUES ('ES4', 'En mantenimiento');
 
 --ejemplares
-
 declare
   vMaterial_id char(5);
 begin
@@ -92,8 +101,8 @@ AltaEjemplar(vMaterial_id);
 end loop;
 end;
 /
---tipo lector
 
+--tipo lector
 INSERT INTO tipoLector VALUES ('TL1', 'Estudiante', '3', '1','8' );
 INSERT INTO tipoLector VALUES ('TL2', 'Profesor', '5', '2','15' );
 INSERT INTO tipoLector VALUES ('TL3', 'Investigador', '10', '3','30' );
@@ -128,7 +137,19 @@ end;
 /
 
 --prestamos
+EXEC altaprestamo ('L1', 'EJ1', 'M1');
+EXEC altaprestamo ('L1', 'EJ1', 'M1');
+EXEC altaprestamo ('L1', 'EJ1', 'M1');
+EXEC altaprestamo ('L1', 'EJ1', 'M1');
+EXEC altaprestamo ('L1', 'EJ1', 'M1');
+EXEC altaprestamo ('L1', 'EJ1', 'M1');
+EXEC altaprestamo ('L1', 'EJ1', 'M1');
+EXEC altaprestamo ('L1', 'EJ1', 'M1');
+EXEC altaprestamo ('L1', 'EJ1', 'M1');
+EXEC altaprestamo ('L1', 'EJ1', 'M1');
 
 
 --multas
+
+
 

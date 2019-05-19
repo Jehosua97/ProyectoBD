@@ -596,11 +596,9 @@ end;
 /
 show errors
 --------------------------------------------6.-PRESTAMO. -- Oscar
---NOTA: VERIFICAR QUE EL LECTOR SE ENCUNTRE CON FECHA VIGENCIA MENOR A SYSDATE
 /*AltaPrestamo*/
 set serveroutput on
 CREATE OR REPLACE PROCEDURE AltaPrestamo(
-  v_resello     IN prestamo.resello%TYPE,
   v_lector_id   IN prestamo.lector_id%TYPE, --YA DEBE DE EXISTIR EL LECTOR
   v_noEjemplar  IN prestamo.noEjemplar%TYPE,
   v_material_id IN prestamo.material_id%TYPE
@@ -627,7 +625,7 @@ BEGIN
 
 
   IF v_estatus_id = 'ES1' THEN
-    IF v_fechaVigenciaLector < SYSDATE THEN
+    IF v_fechaVigenciaLector > SYSDATE THEN
         SELECT tl.limiteDeMateriales INTO v_limiteDeMateriales
         FROM tipoLector tl
         JOIN lector l
@@ -648,8 +646,8 @@ BEGIN
 
           v_fechaVencimiento := v_fechaVencimiento + v_diasPrestamo;
           v_prestamo_id := 'P' || SeqAltaPrestamo.NEXTVAL;
-          INSERT INTO prestamo
-          VALUES (v_prestamo_id, v_resello, NULL, v_fechaPrestamo, v_fechaVencimiento, v_lector_id, v_noEjemplar, v_material_id);
+          INSERT INTO prestamo ( PRESTAMO_ID,RESELLO ,FECHARESELLO, FECHAPRESTAMO ,FECHAVENCIMIENTO, LECTOR_ID ,NOEJEMPLAR ,MATERIAL_ID)
+          VALUES (v_prestamo_id, 0, NULL, v_fechaPrestamo, v_fechaVencimiento, v_lector_id, v_noEjemplar, v_material_id);
           DBMS_OUTPUT.PUT_LINE('Se realizó el prestamo del material:  ' || v_material_id|| ' Al lector: '|| v_lector_id);
           COMMIT;
         ELSE

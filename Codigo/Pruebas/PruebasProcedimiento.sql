@@ -21,8 +21,8 @@ EXEC AltaTesis('Ingenieria','2019','D1','Mexico','Abajo','Algebra1','A3');
 /*******Procedimiento Alta Director Tesis (Chavira)*********/
 --NOTAS: --* gradoEnTexto, por ejemplo: 'Kinder', 'Secu', de la tabla gradoAcademico
          --* apMat se puede ignorar:
---EXEC AltaDirTesis(director_id, gradoEnTexto, Nombre, ApPat, ApMat);
-EXEC AltaDirTesis('D4', 'Kinder', 'Uriel', 'Castro', 'Gonzalez');
+--EXEC AltaDirTesis(SeqAltaDirectorTesis.nextval, gradoEnTexto, Nombre, ApPat, ApMat);
+EXEC AltaDirTesis(SeqAltaDirectorTesis.nextval, 'Kinder', 'Uriel', 'Castro', 'Gonzalez');
 
 /*******Procedimiento Borra Director Tesis (Chavira)*********/
 --EXEC BajaDirTesis(DIRECTOR_ID);
