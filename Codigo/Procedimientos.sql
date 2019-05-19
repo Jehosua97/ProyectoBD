@@ -368,7 +368,7 @@ CREATE OR REPLACE PROCEDURE AltaEjemplar(
   vmaterial_id IN CHAR
 )
 AS
-  vnoEjemplar NUMBER(2);
+  vnoEjemplar CHAR(10);
   vCharejemplar CHAR(5);
   vmaterial NUMBER;
 BEGIN
@@ -376,16 +376,18 @@ SELECT count(*) INTO vmaterial
 FROM material
 WHERE material_id = vmaterial_id;
 IF (vmaterial > 0) THEN
-  SELECT count(*) INTO vnoEjemplar
-  FROM ejemplar WHERE MATERIAL_ID = vmaterial_id;
-  vCharejemplar := 'EJ' || SeqAltaEjemplar.NEXTVAL;
-  INSERT INTO ejemplar VALUES (vCharejemplar, vmaterial_id, 'ES1');
+  SELECT 'EJ' || TO_CHAR(TO_NUMBER(SUBSTR(MAX(noEjemplar), 3, 10))+1)
+  INTO vnoEjemplar
+  FROM ejemplar
+  WHERE MATERIAL_ID = vmaterial_id;
+  INSERT INTO ejemplar VALUES (vnoEjemplar, vmaterial_id, 'ES1');
   COMMIT;
 ELSE
   DBMS_OUTPUT.PUT_LINE('No existe ningun material registrado aun');
 END IF;
 END AltaEjemplar;
 /
+
 
 /*BajaEjemplar*/
 CREATE OR REPLACE PROCEDURE BajaEjemplar(
