@@ -39,7 +39,7 @@ begin
     into vCantidadDeLibros
     from material;
 
-    vCantidadDeAquisiciones:=SeqAltalibro.nextval;
+    vCantidadDeAdquisiciones:=SeqAltalibro.nextval;
 
     --se asigna a la variable pertinente
     vMaterial_id:= 'M' || SeqAltaMaterial.NEXTVAL;
@@ -842,4 +842,21 @@ BEGIN
   COMMIT;
   DBMS_OUTPUT.PUT_LINE('Se actualizó el grado academico con id:  ' || vgradoAcademico_id);
 END ActualizaGradoAcademico;
+/
+--------------------------------------------EXTRA Procedimiento para dar de alta a un autor
+prompt altaautor
+create or replace procedure AltaAutor(
+  pNombreAutor in VARCHAR2,
+  pApPaternoAutor in VARCHAR2,
+  pApMaternoAutor in VARCHAR2,
+  pNacionalidad in VARCHAR2
+)
+is
+  vId char(10);
+begin
+  vId:='A'||to_char(SeqAltaAutor.nextval);
+  insert into autor(autor_id,nombreAutor,apPaternoAutor,apMaternoAutor,nacionalidad)
+  values(vId,pNombreAutor,pApPaternoAutor,pApMaternoAutor,pNacionalidad);
+  dbms_output.put_line('Se dió de alta al autor '||vId);
+end;
 /

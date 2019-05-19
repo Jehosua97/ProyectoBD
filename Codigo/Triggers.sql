@@ -116,7 +116,7 @@ CREATE OR REPLACE TRIGGER tgDevolEliminPrest
       DBMS_OUTPUT.PUT_LINE('Se eliminó prestamo con id ' ||  :old.prestamo_id);
     ELSE
       INSERT INTO multa
-      VALUES('MU' || seqAltaMultas.NEXTVAL, :old.lector_id, SYSDATE, (TRUNC(SYSDATE - :old.fechaVencimiento))*10, TRUNC(SYSDATE - :old.fechaVencimiento));
+      VALUES('MU' || seqAltaMulta.NEXTVAL, :old.lector_id, SYSDATE, (TRUNC(SYSDATE - :old.fechaVencimiento))*10, TRUNC(SYSDATE - :old.fechaVencimiento));
     END IF;
   END tgDevolEliminPrest;
   /

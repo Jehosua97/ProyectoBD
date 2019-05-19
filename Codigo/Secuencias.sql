@@ -1,5 +1,5 @@
---Procedmineto AltaMultas
-create sequence SeqAltaMultas
+--Procedmineto AltaMulta
+create sequence SeqAltaMulta
   start with 0
   increment by 1
   maxvalue 1000
