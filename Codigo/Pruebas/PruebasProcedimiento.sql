@@ -1,7 +1,7 @@
 /*******Procedimiento Alta Libro (Lazaro)*********/
 --Notas: El ISBN se debe variar manualmente para la insercion
---exec AltaLibro(UBICACION, COLOCACION, TITULO, TIPO MATERIAL,'AUTORID', NUMADQUSICION, ISBN, TEMA, EDUCION); 
-EXEC AltaLibro('Primer Piso', 'Arriba', 'Hansel y Grettell', 'L', 'A1', null, 'ISBN6', 'Novelas', 'Quinta'); 
+--exec AltaLibro(UBICACION, COLOCACION, TITULO, TIPO MATERIAL,'AUTORID', NUMADQUSICION, ISBN, TEMA, EDUCION);
+EXEC AltaLibro('Primer Piso', 'Arriba', 'Hansel y Grettell', 'L', 'A1', null, 'ISBN6', 'Novelas', 'Quinta');
 
 /*******Procedimiento Borra Libro (Lazaro)*********/
 --exec BorraLibro(MATERIAL_ID);
@@ -9,14 +9,16 @@ EXEC BorraLibro('M1');
 
 /*******Procedimiento Actualiza Libro (Lazaro)*********/
 --exec ActualizaLibro(MATERIAL_ID, CAMPO.A.MODIFICAR.MAYUSCULAS, VALOR_NUEVO);
-EXEC  ActualizaLibro('M8', 'NOADQUISICION', '20');  
+EXEC  ActualizaLibro('M8', 'NOADQUISICION', '20');
 
 
 /*******Procedimiento Alta Tesis (Oscar)*********/
---EXEC AltaTesis(v_carreraTema,v_anoPublicacion,v_director_id, v_ubicacion, v_colocacion, v_titulo,v_autor_id);      
+--EXEC AltaTesis(v_carreraTema,v_anoPublicacion,v_director_id, v_ubicacion, v_colocacion, v_titulo,v_autor_id);
 EXEC AltaTesis('Ingenieria','2019','D1','Mexico','Abajo','Algebra1','A3');
-/*******Procedimiento Borra Tesis (Oscar)*********/
 /*******Procedimiento Actualiza Tesis (Oscar)*********/
+EXEC ActualizaTesis('M8', 'TITULO', 'Nuevo titulo');
+/*******Procedimiento Borra Tesis (Oscar)*********/
+EXEC BajaTesis('M8');
 
 /*******Procedimiento Alta Director Tesis (Chavira)*********/
 --NOTAS: --* gradoEnTexto, por ejemplo: 'Kinder', 'Secu', de la tabla gradoAcademico
@@ -63,9 +65,11 @@ EXEC BorraLector('L1');
 EXEC ActualizaLector('L1', 'FECHAALTALECTOR', '01/01/13');
 
 /*******Procedimiento Alta Prestamo (Oscar)*********/
-/*******Procedimiento Borra Prestamo (Oscar)*********/
+EXEC AltaPrestamo('L1', 'EJ2', 'M3');
 /*******Procedimiento Actualiza Prestamo (Oscar)*********/
-
+EXEC ActualizaPrestamo('P3', 'RESELLO', '1');
+/*******Procedimiento Borra Prestamo (Oscar)*********/
+EXEC BajaPrestamo('P3');
 
 /*******Procedimiento Alta Multa (Chavira)*********/
 --EXEC AltaMulta(PRESTAMO_ID, LECTOR_ID, FECHAVENCIMIENTO);
@@ -90,4 +94,3 @@ EXEC BajaGradoAcademico('GA2');
 /*******Procedimiento Actualiza GradoAcademico (Joya)*********/
 --EXEC ActualizaGradoAcademico(GRADO_ID, DESCRIPCION);
 EXEC ActualizaGradoAcademico('GA2', 'UNIVERSIDAD');
-
