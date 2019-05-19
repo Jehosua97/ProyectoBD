@@ -138,18 +138,28 @@ end;
 
 --prestamos
 EXEC altaprestamo ('L1', 'EJ1', 'M1');
-EXEC altaprestamo ('L1', 'EJ1', 'M1');
-EXEC altaprestamo ('L1', 'EJ1', 'M1');
-EXEC altaprestamo ('L1', 'EJ1', 'M1');
-EXEC altaprestamo ('L1', 'EJ1', 'M1');
-EXEC altaprestamo ('L1', 'EJ1', 'M1');
-EXEC altaprestamo ('L1', 'EJ1', 'M1');
-EXEC altaprestamo ('L1', 'EJ1', 'M1');
-EXEC altaprestamo ('L1', 'EJ1', 'M1');
-EXEC altaprestamo ('L1', 'EJ1', 'M1');
+EXEC altaprestamo ('L1', 'EJ1', 'M2');
+EXEC altaprestamo ('L1', 'EJ2', 'M2');
+EXEC altaprestamo ('L3', 'EJ1', 'M4');
+EXEC altaprestamo ('L4', 'EJ3', 'M1');
+EXEC altaprestamo ('L5', 'EJ2', 'M2');
+EXEC altaprestamo ('L6', 'EJ4', 'M3');
+EXEC altaprestamo ('L7', 'EJ1', 'M1');
+EXEC altaprestamo ('L8', 'EJ1', 'M1');
+EXEC altaprestamo ('L9', 'EJ1', 'M1');
 
+UPDATE prestamo SET fecharesello = SYSDATE - 20, fechaprestamo = SYSDATE - 20, fechavencimiento = SYSDATE - 12 WHERE LECTOR_ID = 'L5'; 
+UPDATE prestamo SET fecharesello = SYSDATE - 40, fechaprestamo = SYSDATE - 40, fechavencimiento = SYSDATE - 20 WHERE LECTOR_ID = 'L6'; 
+UPDATE prestamo SET fecharesello = SYSDATE - 30, fechaprestamo = SYSDATE - 30, fechavencimiento = SYSDATE - 12 WHERE LECTOR_ID = 'L7'; 
+UPDATE prestamo SET fecharesello = SYSDATE - 26, fechaprestamo = SYSDATE - 26, fechavencimiento = SYSDATE - 5 WHERE LECTOR_ID = 'L8';
+UPDATE prestamo SET fecharesello = SYSDATE - 20, fechaprestamo = SYSDATE - 20, fechavencimiento = SYSDATE - 12 WHERE LECTOR_ID = 'L9'; 
+--SE TIENE QUE EJECUTAR TRIGGER tgDevolEliminPrest ANTES DE LO SIGUIENTE
 
---multas
-
+--Multas
+DELETE prestamo WHERE LECTOR_ID = 'L5';
+DELETE prestamo WHERE LECTOR_ID = 'L6';
+DELETE prestamo WHERE LECTOR_ID = 'L7';
+DELETE prestamo WHERE LECTOR_ID = 'L8';
+DELETE prestamo WHERE LECTOR_ID = 'L9';
 
 
