@@ -13,6 +13,8 @@ EXEC  ActualizaLibro('M8', 'NOADQUISICION', '20');
 
 
 /*******Procedimiento Alta Tesis (Oscar)*********/
+--EXEC AltaTesis(v_carreraTema,v_anoPublicacion,v_director_id, v_ubicacion, v_colocacion, v_titulo,v_autor_id);      
+EXEC AltaTesis('Ingenieria','2019','D1','Mexico','Abajo','Algebra1','A3');
 /*******Procedimiento Borra Tesis (Oscar)*********/
 /*******Procedimiento Actualiza Tesis (Oscar)*********/
 

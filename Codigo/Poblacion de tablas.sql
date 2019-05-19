@@ -38,13 +38,6 @@ AltaLibro('segundo piso', 'abajo', 'Kid from Brooklyn, The','L', vAutor_id, '385
 end;
 /
 
---Tesis
-
---grado academico
-INSERT INTO gradoAcademico VALUES ('GA1', 'Kinder');
-INSERT INTO gradoAcademico VALUES ('GA2', 'Secu');
-INSERT INTO gradoAcademico VALUES ('GA3', 'Prepa');
-
 --director tesis
 declare
   vDescripcionGA varchar2(20);
@@ -71,6 +64,14 @@ select descripcionGA into vDescripcionGA from (select * from gradoacademico orde
 AltaDirTesis(SeqAltaDirectorTesis.nextval, vDescripcionGA, 'Clémentine', 'Tole', 'Gaffon');
 end;
 /
+
+--Tesis
+
+--grado academico
+INSERT INTO gradoAcademico VALUES ('GA1', 'Kinder');
+INSERT INTO gradoAcademico VALUES ('GA2', 'Secu');
+INSERT INTO gradoAcademico VALUES ('GA3', 'Prepa');
+
 
 --estatus
 

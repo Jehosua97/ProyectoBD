@@ -173,8 +173,8 @@ CREATE TABLE multa(
   CONSTRAINT FkLectorId FOREIGN KEY (lector_id)
   REFERENCES lector(lector_id) ON DELETE set null
   );
-@Secuencias.sql
-@Procedimientos.sql
-@Triggers.sql
-@Vistas.sql
+--@Secuencias.sql
+--@Procedimientos.sql
+--@Triggers.sql
+--@Vistas.sql
 

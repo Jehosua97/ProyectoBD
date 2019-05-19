@@ -299,13 +299,15 @@ CREATE OR REPLACE PROCEDURE AltaDirTesis(
 )
 AS
 vBuscaGradoAcademico directorTesis.gradoAcademico_id%TYPE;
+vDT_id CHAR(5);
 BEGIN
+vDT_id := 'D' || vDirector_id;
 SELECT gradoAcademico_id INTO vBuscaGradoAcademico
 FROM gradoAcademico WHERE descripcionGA=vGradoAcademicoDescrip;
 IF (vBuscaGradoAcademico IS NOT NULL) THEN
   INSERT INTO directorTesis
-  VALUES(vDirector_id, vNombreDirector, vApPaternoDirector, vApMaternoDirector, vBuscaGradoAcademico);
-  DBMS_OUTPUT.PUT_LINE('Se insertó al director de tesis con id: '|| vDirector_id);
+  VALUES(vDT_id, vNombreDirector, vApPaternoDirector, vApMaternoDirector, vBuscaGradoAcademico);
+  DBMS_OUTPUT.PUT_LINE('Se insertó al director de tesis con id: '|| vDT_id);
 ELSE
   DBMS_OUTPUT.PUT_LINE('No se encontró registrado el grado de ' ||vGradoAcademicoDescrip);
 END IF;
