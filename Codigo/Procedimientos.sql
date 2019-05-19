@@ -644,10 +644,10 @@ BEGIN
           ON l.tipoLector_id = tl.tipoLector_id
           WHERE l.lector_id = v_lector_id;
 
-          v_fechaVencimiento := v_fechaVencimiento + v_diasPrestamo;
+          v_fechaVencimiento := SYSDATE + TO_NUMBER(v_diasPrestamo);
           v_prestamo_id := 'P' || SeqAltaPrestamo.NEXTVAL;
-          INSERT INTO prestamo ( PRESTAMO_ID,RESELLO ,FECHARESELLO, FECHAPRESTAMO ,FECHAVENCIMIENTO, LECTOR_ID ,NOEJEMPLAR ,MATERIAL_ID)
-          VALUES (v_prestamo_id, 0, NULL, v_fechaPrestamo, v_fechaVencimiento, v_lector_id, v_noEjemplar, v_material_id);
+          INSERT INTO prestamo ( PRESTAMO_ID,RESELLO , FECHAPRESTAMO ,FECHAVENCIMIENTO, LECTOR_ID ,NOEJEMPLAR ,MATERIAL_ID)
+          VALUES (v_prestamo_id, 0, v_fechaPrestamo, v_fechaVencimiento, v_lector_id, v_noEjemplar, v_material_id);
           DBMS_OUTPUT.PUT_LINE('Se realizó el prestamo del material:  ' || v_material_id|| ' Al lector: '|| v_lector_id);
           COMMIT;
         ELSE
@@ -748,6 +748,40 @@ BEGIN
       raise_application_error(-20054,'ERROR No existe ese campo');
   end case;
 end;
+/
+
+CREATE OR REPLACE PROCEDURE resello(
+  vprestamo_id in CHAR
+)
+AS
+  vresello NUMBER(2);
+  vLector_id CHAR(6);
+  vtipolector CHAR(4);
+BEGIN 
+SELECT resello, lector_id INTO vresello, vLector_id
+FROM prestamo 
+WHERE prestamo_id = vprestamo_id;
+SELECT tipolector_id INTO vtipolector
+FROM lector 
+WHERE lector_id = vLector_id;
+CASE
+  WHEN UPPER(vtipolector) = 'TL1' THEN
+    IF vresello < 1 THEN
+      UPDATE prestamo 
+      SET fecharesello = SYSDATE, fechaPrestamo = SYSDATE, FECHAVENCIMIENTO = SYSDATE + 8, resello = resello + 1
+      WHERE prestamo_id =
+    ELSE
+    END IF;
+  WHEN UPPER(vtipolector) = 'TL2' THEN
+    IF vresello < 2 THEN
+    ELSE
+    END IF;
+ELSE
+    IF vresello < 3 THEN
+    ELSE
+    END IF;
+END CASE;
+END resello;
 /
 
 --------------------------------------------7.-MULTA. – Chavira
