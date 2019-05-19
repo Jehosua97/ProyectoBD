@@ -13,10 +13,8 @@ GRANT UNLIMITED TABLESPACE TO proyecto;
 
 CONNECT proyecto/proyecto
 SET SERVEROUTPUT ON
-/*Para iniciar desde cero teclear desde scott drop user proyecto cascade;*/
 
 --Desde usuario "proyecto"
---Actualizar la tabla Multa en el modelo relacional*****************************************************
 CREATE TABLE autor(
   autor_id CHAR(10) NOT NULL,
   nombreAutor VARCHAR2(20) NOT NULL,
