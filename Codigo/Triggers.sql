@@ -99,6 +99,7 @@ BEGIN
   END IF;
 END tgRevisarResello;
 /
+ALTER TRIGGER tgRevisarResello DISABLE;
 
 -----------4.- JOYA           Al realizarse una devolución en tiempo, se eliminará el préstamo.
 CREATE OR REPLACE TRIGGER tgDevolEliminPrest

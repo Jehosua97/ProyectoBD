@@ -174,4 +174,5 @@ DELETE prestamo WHERE LECTOR_ID = 'L7';
 DELETE prestamo WHERE LECTOR_ID = 'L8';
 DELETE prestamo WHERE LECTOR_ID = 'L9';
 
+ALTER TRIGGER tgRevisarResello ENABLE;
 
