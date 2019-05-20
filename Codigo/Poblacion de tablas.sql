@@ -137,6 +137,8 @@ select tipolector_id into vTipoLector from (select tipolector_id from tipolector
 
 end;
 /
+UPDATE lector SET fechaaltalector = SYSDATE - 730, fechavigencialector = SYSDATE - 365 WHERE lector_id = 'L9';
+UPDATE lector SET fechaaltalector = SYSDATE - 730, fechavigencialector = SYSDATE - 365 WHERE lector_id = 'L10';
 
 --prestamos
 EXEC altaprestamo('L1', 'EJ0', 'M1');
