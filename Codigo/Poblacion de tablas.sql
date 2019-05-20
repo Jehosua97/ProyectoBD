@@ -91,16 +91,6 @@ INSERT INTO estatus VALUES ('ES3', 'No deja biblioteca');
 INSERT INTO estatus VALUES ('ES4', 'En mantenimiento');
 
 --ejemplares
---declare
---  vMaterial_id char(5);
---begin
---
---for i in 1..10 loop
---select material_id into vMaterial_id from (select material_id from material order by dbms_random.value) where rownum=1;
---AltaEjemplar(vMaterial_id);
---end loop;
---end;
---/
 EXEC AltaEjemplar('M1');
 EXEC AltaEjemplar('M1');
 EXEC AltaEjemplar('M1');

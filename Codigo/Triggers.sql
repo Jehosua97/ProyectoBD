@@ -117,7 +117,7 @@ CREATE OR REPLACE TRIGGER tgDevolEliminPrest
       VALUES('MU' || seqAltaMulta.NEXTVAL, :old.lector_id, SYSDATE, (TRUNC(SYSDATE - :old.fechaVencimiento))*10, TRUNC(SYSDATE - :old.fechaVencimiento));
     END IF;
     UPDATE ejemplar SET estatus_id='ES1'
-    WHERE noEjemplar=:old.noEjemplar;
+    WHERE noEjemplar=:old.noEjemplar AND material_id = :old.material_id;
   END tgDevolEliminPrest;
   /
 
