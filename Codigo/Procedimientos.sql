@@ -619,13 +619,11 @@ BEGIN
 
   SELECT estatus_id INTO v_estatus_id
   FROM ejemplar
-  WHERE noEjemplar = v_noEjemplar;
+  WHERE noEjemplar = v_noEjemplar AND v_material_id = material_id;
 
   SELECT fechaVigenciaLector INTO v_fechaVigenciaLector
   FROM lector
   WHERE lector_id = v_lector_id;
-
-
 
   IF v_estatus_id = 'ES1' THEN
     IF v_fechaVigenciaLector > SYSDATE THEN
