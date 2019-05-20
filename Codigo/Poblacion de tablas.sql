@@ -141,10 +141,10 @@ end;
 --prestamos
 EXEC altaprestamo('L1', 'EJ0', 'M1');
 EXEC altaprestamo('L1', 'EJ0', 'M2');
-EXEC altaprestamo('L1', 'EJ1', 'M2');
-EXEC altaprestamo('L3', 'EJ0', 'M4');
+EXEC altaprestamo('L1', 'EJ1', 'M1');
+EXEC altaprestamo('L3', 'EJ0', 'M12');
 EXEC altaprestamo('L4', 'EJ2', 'M1');
-EXEC altaprestamo('L5', 'EJ2', 'M2');
+EXEC altaprestamo('L5', 'EJ1', 'M2');
 EXEC altaprestamo('L6', 'EJ0', 'M13');
 EXEC altaprestamo('L7', 'EJ0', 'M14');
 EXEC altaprestamo('L8', 'EJ0', 'M16');
@@ -158,16 +158,16 @@ UPDATE prestamo SET fecharesello = SYSDATE - 20, fechaprestamo = SYSDATE - 20, f
 --SE TIENE QUE EJECUTAR TRIGGER tgDevolEliminPrest ANTES DE LO SIGUIENTE
 
 --Multas
-DELETE prestamo WHERE prestamo_id = 'p0';
-DELETE prestamo WHERE prestamo_id = 'p1';
-DELETE prestamo WHERE prestamo_id = 'p2';
-DELETE prestamo WHERE prestamo_id = 'p3';
-DELETE prestamo WHERE prestamo_id = 'p4';
-DELETE prestamo WHERE prestamo_id = 'p5';
-DELETE prestamo WHERE prestamo_id = 'p6';
-DELETE prestamo WHERE prestamo_id = 'p7';
-DELETE prestamo WHERE prestamo_id = 'p8';
-DELETE prestamo WHERE prestamo_id = 'p9';
+DELETE prestamo WHERE prestamo_id = 'P0';
+DELETE prestamo WHERE prestamo_id = 'P1';
+DELETE prestamo WHERE prestamo_id = 'P2';
+DELETE prestamo WHERE prestamo_id = 'P3';
+DELETE prestamo WHERE prestamo_id = 'P4';
+DELETE prestamo WHERE prestamo_id = 'P5';
+DELETE prestamo WHERE prestamo_id = 'P6';
+DELETE prestamo WHERE prestamo_id = 'P7';
+DELETE prestamo WHERE prestamo_id = 'P8';
+DELETE prestamo WHERE prestamo_id = 'P9';
 
 ALTER TRIGGER tgRevisarResello ENABLE;
 
