@@ -67,6 +67,7 @@ EXEC ActualizaLector('L1', 'FECHAALTALECTOR', '01/01/13');
 /*******Procedimiento Alta Prestamo (Oscar)*********/
 EXEC AltaPrestamo('L1', 'EJ2', 'M3');
 /*******Procedimiento Actualiza Prestamo (Oscar)*********/
+--NOTAS: En mayusculas el campo
 EXEC ActualizaPrestamo('P3', 'RESELLO', '1');
 /*******Procedimiento resello (Joya)*********/
 --EXEC resello(prestamo_id);

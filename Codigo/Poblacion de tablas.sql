@@ -149,16 +149,16 @@ end;
 /
 
 --prestamos
-EXEC altaprestamo('L1', 'EJ1', 'M1');
+EXEC altaprestamo('L1', 'EJ0', 'M1');
+EXEC altaprestamo('L1', 'EJ0', 'M2');
 EXEC altaprestamo('L1', 'EJ1', 'M2');
-EXEC altaprestamo('L1', 'EJ2', 'M2');
-EXEC altaprestamo('L3', 'EJ1', 'M4');
-EXEC altaprestamo('L4', 'EJ3', 'M1');
-EXEC altaprestamo('L5', 'EJ3', 'M2');
-EXEC altaprestamo('L6', 'EJ1', 'M3');
-EXEC altaprestamo('L7', 'EJ1', 'M5');
-EXEC altaprestamo('L8', 'EJ1', 'M6');
-EXEC altaprestamo('L9', 'EJ1', 'M7');
+EXEC altaprestamo('L3', 'EJ0', 'M4');
+EXEC altaprestamo('L4', 'EJ2', 'M1');
+EXEC altaprestamo('L5', 'EJ2', 'M2');
+EXEC altaprestamo('L6', 'EJ0', 'M3');
+EXEC altaprestamo('L7', 'EJ0', 'M5');
+EXEC altaprestamo('L8', 'EJ0', 'M6');
+EXEC altaprestamo('L9', 'EJ0', 'M7');
 
 UPDATE prestamo SET fecharesello = SYSDATE - 20, fechaprestamo = SYSDATE - 20, fechavencimiento = SYSDATE - 12 WHERE LECTOR_ID = 'L5'; 
 UPDATE prestamo SET fecharesello = SYSDATE - 40, fechaprestamo = SYSDATE - 40, fechavencimiento = SYSDATE - 20 WHERE LECTOR_ID = 'L6'; 
