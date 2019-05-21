@@ -781,7 +781,7 @@ SELECT tipolector_id INTO vtipolector
 FROM lector 
 WHERE lector_id = vLector_id;
 CASE
-  WHEN UPPER(vtipolector) = 'TL1' THEN
+  WHEN vtipolector = 'TL1' THEN
     IF vresello < 1 THEN
       UPDATE prestamo 
       SET fecharesello = SYSDATE, fechaPrestamo = SYSDATE, FECHAVENCIMIENTO = SYSDATE + 8, resello = resello + 1
@@ -789,7 +789,7 @@ CASE
     ELSE
       DBMS_OUTPUT.PUT_LINE('Favor de devolver el libro');
     END IF;
-  WHEN UPPER(vtipolector) = 'TL2' THEN
+  WHEN vtipolector = 'TL2' THEN
     IF vresello < 2 THEN
       UPDATE prestamo 
       SET fecharesello = SYSDATE, fechaPrestamo = SYSDATE, FECHAVENCIMIENTO = SYSDATE + 15, resello = resello + 1
