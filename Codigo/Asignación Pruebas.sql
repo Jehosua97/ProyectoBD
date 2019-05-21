@@ -9,12 +9,7 @@ OSCAR (Las tablas Autor, Director Tesis, Libro, Tesis, Material, Ejemplar deben 
 --Probar vista vwCatalogoEstatusMaterial "Poblacion de tablas.sql"
 --Probar vista vwCatalogoLector "Poblacion de tablas.sql"
 
-
-
-
-
-
-
+------------------------------------------------------------------------------------------------------------------
 LAZARO (Las tablas Lector, Prestamo, Ejemplar, Multa deben estar vacias y de ahi agregar valores necesarios para trabajar)
 --Insertar 1 solo lector LT1 (Desplegar tabla antes y despues de inserción)
 --Intentar exceder limite de materiales LT1 y mostrar error
@@ -29,12 +24,7 @@ LAZARO (Las tablas Lector, Prestamo, Ejemplar, Multa deben estar vacias y de ahi
 --Una vez con multa, verificar que no puede sacar prestamos LT1
 --Cambiar fecha de vigencia lector y verifiar que ya no puede sacar prestamo LT1
 
-
-
-
-
-
-
+------------------------------------------------------------------------------------------------------------------
 CHAVIRA (Las tablas Lector, Prestamo, Ejemplar, Multa deben estar vacias y de ahi agregar valores necesarios para trabajar)
 --Insertar 1 solo lector LT2 (Desplegar tabla antes y despues de inserción)
 --Intentar exceder limite de materiales LT2 y mostrar error
@@ -49,7 +39,6 @@ CHAVIRA (Las tablas Lector, Prestamo, Ejemplar, Multa deben estar vacias y de ah
 --Una vez con multa, verificar que no puede sacar prestamos LT2
 --Cambiar fecha de vigencia lector y verifiar que ya no puede sacar prestamo LT2
 
-LISTO:
 IMPORTANTE: Utilizar el archivo "PRUEBA SPOOL Chavira.sql" en vez de la población de tablas.
 CÓDIGO:
 --Se ingresa un nuevo Profesor.
@@ -88,6 +77,8 @@ ALTER TRIGGER tgRevisarResello ENABLE;
 EXEC resello('P0');
 --Error por rebasar límite de resellos permitidos.
 EXEC resello('P0');
+--Vemos que no se hace el resello por error anterior
+select * from prestamo where prestamo_id= 'P0';
 --Modificando la fecha de vencimiento a una anterior a la fecha actual para generar una multa de prueba y devolver el material.
 ALTER TRIGGER tgRevisarResello DISABLE;
 UPDATE prestamo SET fecharesello=SYSDATE-20, fechaprestamo=SYSDATE-20, fechavencimiento=SYSDATE-5 WHERE prestamo_id = 'P0';
@@ -111,15 +102,12 @@ UPDATE lector SET fechaVigenciaLector=SYSDATE-5 WHERE lector_id='L1';
 --Con la fecha caducada, se intenta hacer un préstamo de nuevo, y falla.
 EXEC altaprestamo('L1', 'EJ0', 'M1');
 
+------------------------------------------------------------------------------------------------------------------
 
-
-
-
-
-JEHOSUA (Las tablas Lector, Prestamo, Ejemplar, Multa deben estar vacias y de ahi agregar valores necesarios para trabajar)
+JOYA (Las tablas Lector, Prestamo, Ejemplar, Multa deben estar vacias y de ahi agregar valores necesarios para trabajar)
 --Insertar 1 solo lector LT3 (Desplegar tabla antes y despues de inserción)
 --Intentar exceder limite de materiales LT3 y mostrar error
---Intentar sacar libros en estatus EST3. Desplegar error
+--Intentar sacar libros en estatus EST4. Desplegar error
 --Mostrar que los Dias de prestamo de un LT3 son de 30 dias en la tabla prestamo
 --Verificar modificacion de estatus ejemplar al realizar un prestamo LT3. "De EST1 a EST2"
 --Verificar que unicamente se puede resellar en la fecha de vencimiento y no antes LT3
@@ -129,6 +117,72 @@ JEHOSUA (Las tablas Lector, Prestamo, Ejemplar, Multa deben estar vacias y de ah
 --Mostrar adeudo total y las multas que ha tenido LT3 (tabla lector(solo lector_id, nombre, adeudo, tipoLector), tabla multa)
 --Una vez con multa, verificar que no puede sacar prestamos LT3
 --Cambiar fecha de vigencia lector y verifiar que ya no puede sacar prestamo LT3
+
+--Insertando un Lector tipo Investigador
+SELECT * FROM lector;
+EXEC AltaLector('5548088425','Jehosua Alan','Joya','Venegas','CDMX','73','Av 16 Sep','Tepepan','Xochimilco','TL3');
+SELECT * FROM lector;
+
+SELECT * FROM prestamo;
+--Ingreso de préstamos permitido del Investigador: 10 préstamos.
+EXEC altaprestamo('L1', 'EJ0', 'M1');
+EXEC altaprestamo('L1', 'EJ0', 'M2');
+EXEC altaprestamo('L1', 'EJ0', 'M3');
+EXEC altaprestamo('L1', 'EJ0', 'M4');
+EXEC altaprestamo('L1', 'EJ0', 'M5');
+EXEC altaprestamo('L1', 'EJ0', 'M12');
+EXEC altaprestamo('L1', 'EJ0', 'M13');
+EXEC altaprestamo('L1', 'EJ0', 'M14');
+EXEC altaprestamo('L1', 'EJ0', 'M15');
+EXEC altaprestamo('L1', 'EJ0', 'M16');
+--Error si se excede el límite del Investigador: 10 préstamos.
+EXEC altaprestamo('L1', 'EJ0', 'M17');
+--Los días del préstamo para el Investigador: 30 días.
+SELECT * FROM prestamo;
+--Estatus de los ejemplares prestados cambió de 'EST1' a 'EST2', de 'Prestado'.
+SELECT * FROM ejemplar;
+--Error si el estado del ejemplar es "En mantenimiento".
+EXEC altaprestamo('L1', 'EJ0', 'M18');
+--Resello denegado si no es en fecha de vencimiento.
+EXEC resello('P0');
+--Alteración de la fecha de vencimiento dehabilitando el trigger de UPDATE.
+ALTER TRIGGER tgRevisarResello DISABLE;
+UPDATE prestamo SET fechaVencimiento=SYSDATE WHERE prestamo_id='P0';
+ALTER TRIGGER tgRevisarResello ENABLE;
+EXEC resello('P0');
+--Nuevos datos de fecha para el préstamo resellado.
+SELECT * FROM prestamo WHERE prestamo_id='P0';
+--Excediendo el número de resello permitidos del Investigador (Una vez más se deshabilita trigger para modificar fecha forzadamente).
+ALTER TRIGGER tgRevisarResello DISABLE;
+UPDATE prestamo SET fechaVencimiento=SYSDATE WHERE prestamo_id='P0';
+ALTER TRIGGER tgRevisarResello ENABLE;
+EXEC resello('P0');
+--Error por rebasar límite de resellos permitidos.
+EXEC resello('P0');
+--Vemos que no se hace el resello por error anterior
+select * from prestamo where prestamo_id= 'P0';
+--Modificando la fecha de vencimiento a una anterior a la fecha actual para generar una multa de prueba y devolver el material.
+ALTER TRIGGER tgRevisarResello DISABLE;
+UPDATE prestamo SET fecharesello=SYSDATE-20, fechaprestamo=SYSDATE-20, fechavencimiento=SYSDATE-5 WHERE prestamo_id = 'P0';
+ALTER TRIGGER tgRevisarResello ENABLE;
+--Se cambia el estado del ejemplar asociado al préstamo P0: el ejemplar EJ0 del material M1. Pasa de 'EST2' a 'EST1', de 'Disponible'.
+--Se genera una multa por los días de retraso en realizar la devolución.
+SELECT * FROM ejemplar WHERE noEjemplar='EJ0' AND material_id='M1';
+SELECT * FROM multa;
+EXEC bajaPrestamo('P0');
+SELECT * FROM ejemplar WHERE noEjemplar='EJ0' AND material_id='M1';
+SELECT * FROM multa;
+--Se muestra el adeudo del lector, coincidente con la multa generada.
+SELECT lector_id, nombreLector, adeudoLector, tipoLector_id
+FROM lector WHERE lector_id = 'L1';
+--Como cuenta con multa, tiene prohibido dar de alta préstamos en su nombre.
+EXEC altaprestamo('L1', 'EJ0', 'M1');
+--Se elimina la multa.
+DELETE FROM multa;
+--Se caduca la fecha de vigencia del lector para prohibir los préstamos de tal forma.
+UPDATE lector SET fechaVigenciaLector=SYSDATE-5 WHERE lector_id='L1';
+--Con la fecha caducada, se intenta hacer un préstamo de nuevo, y falla.
+EXEC altaprestamo('L1', 'EJ0', 'M1');
 
 
 

@@ -95,4 +95,12 @@ INSERT INTO tipoLector VALUES ('TL2', 'Profesor', '5', '2','15' );
 INSERT INTO tipoLector VALUES ('TL3', 'Investigador', '10', '3','30' );
 
 ALTER TRIGGER tgRevisarResello ENABLE;
-UPDATE ejemplar SET estatus_id='ES3' WHERE noEjemplar='EJ0' AND material_id='M18';
+
+--Ejecucion para Chavira
+--UPDATE ejemplar SET estatus_id='ES3' WHERE noEjemplar='EJ0' AND material_id='M18';
+
+--Ejecucion para Lazaro
+--UPDATE ejemplar SET estatus_id='ES2' WHERE noEjemplar='EJ0' AND material_id='M18';
+
+--Ejecucion para Joya
+--UPDATE ejemplar SET estatus_id='ES4' WHERE noEjemplar='EJ0' AND material_id='M18';
