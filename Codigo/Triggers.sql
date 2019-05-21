@@ -115,6 +115,9 @@ CREATE OR REPLACE TRIGGER tgDevolEliminPrest
     ELSE
       INSERT INTO multa
       VALUES('MU' || seqAltaMulta.NEXTVAL, :old.lector_id, SYSDATE, (TRUNC(SYSDATE - :old.fechaVencimiento))*10, TRUNC(SYSDATE - :old.fechaVencimiento));
+      UPDATE lector
+      SET adeudolector = adeudolector + (TRUNC(SYSDATE - :old.fechaVencimiento))*10
+      WHERE :old.lector_id = lector_id;
     END IF;
     UPDATE ejemplar SET estatus_id='ES1'
     WHERE noEjemplar=:old.noEjemplar AND material_id = :old.material_id;

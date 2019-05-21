@@ -21,6 +21,7 @@ is
   vCantidadDeAutores number;
   vCantidadDeLibros number;
   vCantidadDeAdquisiciones number;
+  vNumEjemplar number;
 begin
   if vTipo != 'L' then
     raise_application_error(-20049,'ERROR El tipo de material no es libro, ocupa
@@ -52,7 +53,13 @@ begin
     --se inserta en la tabla libro
     insert into libro (material_id,noAdquisicion,ISBN,tema,edicion)
     values(vMaterial_id,vCantidadDeAdquisiciones,vISBN,vTema,vEdicion);
-
+    --se verifica que no hay ningun ejemplar para agregarlo
+    SELECT count(*) INTO vNumEjemplar
+    FROM ejemplar WHERE material_id = vMaterial_id;
+    IF vNumEjemplar = 0 THEN
+      INSERT INTO ejemplar 
+      VALUES ('EJ0', vMaterial_id, 'ES1');
+    END IF;
     dbms_output.put_line('Se dio de alta exitosamente al libro '|| vMaterial_id);
 
   else
@@ -183,6 +190,7 @@ AS
   v_existeDirector NUMBER;
   v_material_id material.material_id%TYPE;
   v_tesis_id tesis.tesis_id%TYPE;
+  vNumEjemplar NUMBER;
 BEGIN
 
   --VERIFIACR SI EXITE EL MATERIAL_ID
@@ -208,6 +216,13 @@ BEGIN
 
     INSERT INTO tesis
     VALUES (v_material_id, v_tesis_id, v_carreraTema, v_anoPublicacion, v_director_id);
+    
+    SELECT count(*) INTO vNumEjemplar
+    FROM ejemplar WHERE material_id = v_material_id;
+    IF vNumEjemplar = 0 THEN
+      INSERT INTO ejemplar 
+      VALUES ('EJ0', v_material_id, 'ES1');
+    END IF;
     DBMS_OUTPUT.PUT_LINE('Se inserto un nuevo material tipo tesis:  ' || v_material_id);
     COMMIT;
   END IF;

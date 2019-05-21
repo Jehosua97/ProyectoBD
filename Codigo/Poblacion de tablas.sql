@@ -157,7 +157,7 @@ UPDATE prestamo SET fecharesello = SYSDATE - 40, fechaprestamo = SYSDATE - 40, f
 UPDATE prestamo SET fecharesello = SYSDATE - 30, fechaprestamo = SYSDATE - 30, fechavencimiento = SYSDATE - 12 WHERE LECTOR_ID = 'L7'; 
 UPDATE prestamo SET fecharesello = SYSDATE - 26, fechaprestamo = SYSDATE - 26, fechavencimiento = SYSDATE - 5 WHERE LECTOR_ID = 'L8';
 UPDATE prestamo SET fecharesello = SYSDATE - 20, fechaprestamo = SYSDATE - 20, fechavencimiento = SYSDATE - 12 WHERE LECTOR_ID = 'L9'; 
---SE TIENE QUE EJECUTAR TRIGGER tgDevolEliminPrest ANTES DE LO SIGUIENTE
+
 
 --Multas
 DELETE prestamo WHERE prestamo_id = 'P0';
