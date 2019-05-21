@@ -90,9 +90,9 @@ CREATE OR REPLACE TRIGGER tgRevisarResello
 BEFORE UPDATE ON prestamo
 FOR EACH ROW
 BEGIN
-  IF TRUNC(:OLD.fechaResello-SYSDATE)=0 THEN
+  IF TRUNC(:OLD.fechaVencimiento-SYSDATE)=0 THEN
     DBMS_OUTPUT.PUT_LINE('La fecha de resello coincide con la fecha actual.');
-  ELSIF :OLD.fechaResello<SYSDATE THEN
+  ELSIF :OLD.fechaVencimiento<SYSDATE THEN
     RAISE_APPLICATION_ERROR(-20097,'Este libro ya pasó su fecha de resello. Debe expedirse una multa.');
   ELSE
     RAISE_APPLICATION_ERROR(-20098, 'Este libro sólo se puede resellar el día de su fecha de resello.');
