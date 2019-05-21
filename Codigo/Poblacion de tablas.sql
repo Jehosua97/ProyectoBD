@@ -10,6 +10,12 @@ exec AltaAutor('Brande', 'Dawson', 'Erni', 'Uruguayan');
 exec AltaAutor('Billi', 'Corking', 'Jellett', 'Fijian');
 exec AltaAutor('Riva', 'Beddingham', 'Dunleavy', 'Eskimo');
 
+--estatus
+INSERT INTO estatus VALUES ('ES1', 'Disponible');
+INSERT INTO estatus VALUES ('ES2', 'Prestado');
+INSERT INTO estatus VALUES ('ES3', 'No deja biblioteca');
+INSERT INTO estatus VALUES ('ES4', 'En mantenimiento');
+
 --Libros
 declare
   vAutor_id char(10);
@@ -84,11 +90,6 @@ EXEC AltaTesis('Medicina','2001','D9','Mexico','Abajo','Medicina Fam','A5');
 EXEC AltaTesis('Veterinaria','2000','D4','Peru','Arriba','Perritos 1','A3');
 
 
---estatus
-INSERT INTO estatus VALUES ('ES1', 'Disponible');
-INSERT INTO estatus VALUES ('ES2', 'Prestado');
-INSERT INTO estatus VALUES ('ES3', 'No deja biblioteca');
-INSERT INTO estatus VALUES ('ES4', 'En mantenimiento');
 
 --ejemplares
 EXEC AltaEjemplar('M1');
@@ -137,8 +138,6 @@ select tipolector_id into vTipoLector from (select tipolector_id from tipolector
 
 end;
 /
-UPDATE lector SET fechaaltalector = SYSDATE - 730, fechavigencialector = SYSDATE - 365 WHERE lector_id = 'L9';
-UPDATE lector SET fechaaltalector = SYSDATE - 730, fechavigencialector = SYSDATE - 365 WHERE lector_id = 'L10';
 
 --prestamos
 EXEC altaprestamo('L1', 'EJ0', 'M1');
@@ -165,11 +164,7 @@ DELETE prestamo WHERE prestamo_id = 'P1';
 DELETE prestamo WHERE prestamo_id = 'P2';
 DELETE prestamo WHERE prestamo_id = 'P3';
 DELETE prestamo WHERE prestamo_id = 'P4';
-DELETE prestamo WHERE prestamo_id = 'P5';
-DELETE prestamo WHERE prestamo_id = 'P6';
-DELETE prestamo WHERE prestamo_id = 'P7';
-DELETE prestamo WHERE prestamo_id = 'P8';
-DELETE prestamo WHERE prestamo_id = 'P9';
+
 
 ALTER TRIGGER tgRevisarResello ENABLE;
 
