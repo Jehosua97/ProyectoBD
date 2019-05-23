@@ -22,7 +22,6 @@ SELECT * FROM autor;
 
 --Insertar 2 Libros y 2 Tesis (Mostrara tabla libro, tesis, material y ejemplar)
 SELECT * FROM libro;
-SELECT * FROM tesis;
 SELECT * FROM material;
 SELECT * FROM ejemplar;
 -- insertando Libro
@@ -30,13 +29,20 @@ SELECT * FROM ejemplar;
 EXEC AltaLibro('Segundo Piso','Abajo','DelaTierraalaLuna','L','A1','ISBN1','Novelas','Primera');
 EXEC AltaLibro('Segundo Piso','Arriba','The Shining','L','A2','ISBN2','Novelas','Primera');
 
+--libros insertados
+SELECT * FROM libro;
+SELECT * FROM material;
+SELECT * FROM ejemplar;
+
 -- insertando TESIS
+SELECT * FROM tesis;
+SELECT * FROM material;
+SELECT * FROM ejemplar;
 --EXEC AltaTesis(v_carreraTema,v_anoPublicacion,v_director_id, v_ubicacion, v_colocacion, v_titulo,v_autor_id);
 EXEC AltaTesis('Ingenieria','1975','D1','Primer Piso','Abajo','Tesis de ingenieria','A3');
 EXEC AltaTesis('Fisica','1965','D2','Primer Piso','Arriba','Expanding Universes','A4');
 
---libros y tesis insertados
-SELECT * FROM libro;
+-- Tesis insertadas
 SELECT * FROM tesis;
 SELECT * FROM material;
 SELECT * FROM ejemplar;
@@ -69,9 +75,6 @@ EXEC AltaLector('5599887766','Edith','Miramontes','Molina','Ciudad Juarez','7','
 SELECT * FROM lector;
 
 --Probar vista vwCatalogoLibro con datos de "Poblacion de tablas.sql"
-SELECT * FROM vwCatalogoLibro;
-
---Probar vista vwCatalogoLibro "Poblacion de tablas.sql"
 SELECT * FROM vwCatalogoLibro;
 
 --Probar vista vwCatalogoAutor "Poblacion de tablas.sql"
